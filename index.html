@@ -1,0 +1,1624 @@
+<!doctype html><html lang="vi"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>KHTN 6 · Bài 11–14 · Ôn tập qua trò chơi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column. Title with tape stripe, four puzzle tabs, one active panel, teacher gate in the footer.
+   The navy/teal tape stripe under the title is the single bold gesture; the puzzles stay quiet. */
+:root{
+  --bg:#F6F2F8; --surface:#FFFFFF; --surface-2:#EDE6F2; --ink:#2A1838; --muted:#6A5A78; --line:#DACFE3;
+  --navy:#5A2D82; --teal:#B3267A; --teal-soft:#F6DCEB; --orange:#E36C09; --orange-ink:#A94700;
+  --btn-bg:#5A2D82; --btn-fg:#FFFFFF; --good:#1E7F55; --bad:#B42318; --focus:#E36C09;
+  --sel-bg:#FFE0C2; --cw-word:#E8DCF3; --cw-cur:#FFD3A3; --wrong:#F8D2CE; --block:#2A1838;
+  --font-display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --font-body:'Source Sans 3','Segoe UI',Arial,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A0F24; --surface:#2A1838; --surface-2:#3A2450; --ink:#F1E9F7; --muted:#B9A8CA; --line:#4A3562;
+    --navy:#C9A6F0; --teal:#F07AB8; --teal-soft:#4A1F3C; --orange:#FF9A4D; --orange-ink:#FFB47A;
+    --btn-bg:#FF9A4D; --btn-fg:#2A1838; --good:#5FD3A0; --bad:#FF8A80; --focus:#FF9A4D;
+    --sel-bg:#5C3A18; --cw-word:#4A2D6B; --cw-cur:#6B4620; --wrong:#5A2A2A; --block:#12091B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A0F24; --surface:#2A1838; --surface-2:#3A2450; --ink:#F1E9F7; --muted:#B9A8CA; --line:#4A3562;
+  --navy:#C9A6F0; --teal:#F07AB8; --teal-soft:#4A1F3C; --orange:#FF9A4D; --orange-ink:#FFB47A;
+  --btn-bg:#FF9A4D; --btn-fg:#2A1838; --good:#5FD3A0; --bad:#FF8A80; --focus:#FF9A4D;
+  --sel-bg:#5C3A18; --cw-word:#4A2D6B; --cw-cur:#6B4620; --wrong:#5A2A2A; --block:#12091B;
+  color-scheme:dark;
+}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-inline:16px;padding-block:28px 56px}
+*{box-sizing:border-box}
+.wrap{max-width:820px;margin-inline:auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.kicker{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-ink)}
+h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.01em;
+  font-size:clamp(2.8rem,10vw,4.8rem);line-height:.95;margin-top:6px}
+.tape{height:12px;margin-block:14px 16px;
+  background:repeating-linear-gradient(-45deg,var(--navy) 0 14px,var(--teal) 14px 28px)}
+.lede{max-width:62ch}
+.byline{margin:6px 0 10px;font-size:.9rem;color:var(--muted);letter-spacing:.02em}
+.lede + .lede{margin-top:8px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:4px}
+.field label,.lbl{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+select,input[type=text],input[type=password]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);
+  border-radius:4px;padding:9px 11px;min-width:0;max-width:100%}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--btn-bg);color:var(--btn-fg);border:0;border-radius:4px;padding:9px 18px;font-weight:700;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.08)}
+.btn-quiet{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:8px 14px;font-weight:600}
+.btn-quiet:hover:not(:disabled){color:var(--ink);border-color:var(--muted)}
+button:disabled{opacity:.6;cursor:default}
+body:not(.teacher) .t-only{display:none}
+
+.tabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:2px solid var(--line)}
+.tab{background:transparent;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:10px 16px 8px;
+  font-family:var(--font-display);font-weight:700;font-size:1.35rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--orange)}
+.tab:hover{color:var(--ink)}
+
+.panel{display:flex;flex-direction:column;gap:14px}
+.panel[hidden]{display:none}
+.opts{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.opts label.chk{display:flex;gap:7px;align-items:center;font-weight:600}
+.status{font-weight:600;min-height:1.5em}
+.status.good{color:var(--good)}
+.note{color:var(--muted);font-size:.92rem}
+
+/* teacher gate */
+.tbanner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border:2px solid var(--orange);
+  background:var(--surface);border-radius:6px;padding:8px 12px;font-weight:600}
+.tbanner[hidden]{display:none}
+.foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.85rem;color:var(--muted)}
+.foot .link{background:none;border:0;color:var(--muted);text-decoration:underline;padding:0}
+.tform{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tform[hidden]{display:none}
+.tform input{width:200px}
+
+/* word search */
+.ws{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.ws-grid{flex:1 1 340px;max-width:540px;display:grid;grid-template-columns:repeat(14,1fr);gap:2px;
+  touch-action:none;user-select:none;-webkit-user-select:none;background:var(--line);padding:2px;border-radius:4px}
+.ws-cell{aspect-ratio:1;display:grid;place-items:center;background:var(--surface);font-family:var(--font-mono);
+  font-weight:600;font-size:clamp(.78rem,3.1vw,1.1rem);cursor:pointer;min-width:0}
+.ws-cell.sel{background:var(--sel-bg)}
+.ws-cell.found{background:var(--teal-soft);color:var(--ink);font-weight:700;box-shadow:inset 0 0 0 1px var(--teal)}
+.ws-cell.hint{outline:3px solid var(--orange);outline-offset:-3px}
+.ws-cell.teach{box-shadow:inset 0 0 0 2px var(--orange)}
+.ws-list{flex:1 1 200px;min-width:0;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ws-list li{font-family:var(--font-mono);font-weight:600;font-size:.92rem;padding:5px 9px;background:var(--surface);
+  border:1px solid var(--line);border-radius:4px;overflow-wrap:anywhere}
+.ws-list.clues li{font-family:var(--font-body);font-weight:400;font-size:.95rem;line-height:1.35}
+.ws-list li.done{color:var(--muted);background:var(--teal-soft);border-color:var(--teal)}
+.ws-list li.done .w{text-decoration:line-through}
+.ws-list li.done .rev{font-family:var(--font-mono);font-weight:700;color:var(--ink)}
+
+/* crossword */
+.cw{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.cw-left{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.cw-banner{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:8px 12px;min-height:3.2em;font-weight:600}
+.cw-banner b{font-family:var(--font-mono);color:var(--orange-ink);margin-right:6px}
+.cw-grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:2px;background:var(--block);padding:2px;
+  max-width:calc(var(--cols) * 44px);border-radius:3px}
+.cw-cell{position:relative;aspect-ratio:1;background:var(--surface);min-width:0}
+.cw-cell.blk{background:var(--block)}
+.cw-cell.inword{background:var(--cw-word)}
+.cw-cell.cur{background:var(--cw-cur)}
+.cw-cell.wrong{background:var(--wrong)}
+.cw-cell .n{position:absolute;left:2px;top:0;font-size:.6rem;line-height:1.2;color:var(--muted);font-family:var(--font-mono);pointer-events:none}
+.cw-cell input{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color:var(--ink);
+  text-align:center;text-transform:uppercase;font:600 16px var(--font-mono);padding:6px 0 0;border-radius:0;caret-color:transparent}
+.cw-cell input:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+.cw-clues{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.cw-clues h3{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-family:var(--font-body)}
+.cw-clues ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.cw-clues button{width:100%;text-align:left;background:transparent;border:0;border-radius:3px;padding:5px 8px;color:var(--ink);font-size:.93rem;line-height:1.35}
+.cw-clues button:hover{background:var(--surface-2)}
+.cw-clues button.cur{background:var(--cw-cur)}
+.cw-clues button.done{color:var(--muted);text-decoration:line-through}
+.cw-clues .num{font-family:var(--font-mono);font-weight:600;margin-right:6px}
+
+/* scramble */
+.sc{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 18px;display:flex;flex-direction:column;gap:14px;max-width:620px}
+.sc[hidden]{display:none}
+.sc-letters{display:flex;flex-wrap:wrap;gap:6px}
+.sc-letters span{width:2.1rem;height:2.5rem;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:4px;font-family:var(--font-mono);font-weight:600;font-size:1.3rem}
+.sc-clue{max-width:60ch}
+.sc-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sc-row input{width:min(100%,260px);font-family:var(--font-mono);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+
+/* hangman: a beaker fills with each wrong guess */
+.hm{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start}
+.hm-fig{margin:0;flex:0 0 190px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 10px 8px;text-align:center}
+.hm-fig svg{display:block;width:100%;height:auto}
+.hm-fig figcaption{font-family:var(--font-mono);font-weight:600;font-size:.85rem;color:var(--muted)}
+.bk-out{fill:none;stroke:var(--muted);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.bk-tick{stroke:var(--muted);stroke-width:2}
+.bk-liq{fill:var(--teal);opacity:.85;transition:y .35s,height .35s}
+.bk-lost .bk-liq{fill:var(--orange)}
+.bk-drip{fill:var(--orange);display:none}
+.bk-lost .bk-drip{display:block}
+.hm-main{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.hm-word{display:flex;flex-wrap:wrap;gap:6px}
+.hm-word span{width:2rem;height:2.5rem;display:grid;place-items:center;border-bottom:3px solid var(--ink);
+  font-family:var(--font-mono);font-weight:600;font-size:1.5rem}
+.hm-word span.miss{color:var(--orange-ink);border-bottom-color:var(--orange)}
+.hm-clue{max-width:60ch;min-height:3em}
+.hm-keys{display:flex;flex-wrap:wrap;gap:6px;max-width:520px}
+.hm-keys button{width:2.4rem;height:2.4rem;padding:0;background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  border-radius:4px;font-family:var(--font-mono);font-weight:600;font-size:1rem}
+.hm-keys button:hover:not(:disabled){border-color:var(--teal)}
+.hm-keys button.ok{background:var(--teal-soft);border-color:var(--teal);opacity:1}
+.hm-keys button.no{background:var(--wrong);border-color:var(--bad);opacity:1;text-decoration:line-through}
+
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* scoreboard */
+.sb{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:2px solid var(--navy);
+  border-radius:6px;padding:8px 14px;display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center}
+.sb-total{display:flex;align-items:baseline;gap:10px}
+.sb-total .lbl{white-space:nowrap}
+.sb-num{font-family:var(--font-display);font-weight:700;font-size:2.4rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.sb-num.bump{animation:bump .35s}
+@keyframes bump{40%{transform:scale(1.18);color:var(--orange-ink)}}
+.sb-parts{display:flex;flex-wrap:wrap;gap:2px 16px;font-size:.88rem;color:var(--muted)}
+.sb-parts b{color:var(--ink);font-family:var(--font-mono);font-variant-numeric:tabular-nums;margin-left:4px}
+.sb-last{flex:1 1 200px;min-width:0;font-weight:600;font-size:.92rem;min-height:1.4em;color:var(--muted)}
+.sb-last.up{color:var(--good)}
+.sb-last.down{color:var(--bad)}
+.sb-actions{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+.reset{background:var(--surface);border:2px solid var(--bad);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.reset[hidden]{display:none}
+.reset h2{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:1.3rem;color:var(--bad)}
+.reset p{margin:0}
+.btn-danger{background:transparent;color:var(--bad);border:2px solid var(--bad);border-radius:4px;padding:8px 14px;font-weight:700}
+.btn-danger:hover:not(:disabled){background:var(--bad);color:var(--surface)}
+.btn-danger:disabled{opacity:.45;cursor:not-allowed}
+.final{background:var(--surface);border:2px solid var(--orange);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.final[hidden]{display:none}
+.final h2{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:1.6rem}
+.final-num{font-family:var(--font-display);font-weight:700;font-size:4rem;line-height:1;font-variant-numeric:tabular-nums}
+.final-num small{font-size:1.1rem;font-weight:600;color:var(--muted);letter-spacing:.05em;margin-left:8px;text-transform:uppercase}
+.final-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0}
+.final-list div{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--bg)}
+.final-list dt{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.final-list dd{margin:2px 0 0;font-family:var(--font-mono);font-weight:600;font-size:1.4rem;font-variant-numeric:tabular-nums}
+.rules{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:10px 14px}
+.rules summary{cursor:pointer;font-weight:700}
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:12px}
+.rg>div{min-width:0}
+.rg h3{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:1.2rem;color:var(--navy);margin-bottom:4px}
+.rg ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:3px;font-size:.92rem}
+.rules .note{margin-top:12px}
+.note.left{margin:0;font-variant-numeric:tabular-nums}
+.sb-num.neg,.sb-parts b.neg,.final-num.neg,.final-list dd.neg{color:var(--bad)}
+.ws-list.clues li{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.ws-list li .rev{font-family:var(--font-mono);font-weight:700;color:var(--orange-ink);display:block}
+.ws-list li.done .rev{display:inline}
+.rv{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 9px;font-size:.82rem;font-weight:600}
+.rv:hover{color:var(--ink);border-color:var(--muted)}
+@media (max-width:420px){.sb-num{font-size:2rem}.final-num{font-size:3.2rem}}
+@media (prefers-reduced-motion: reduce){.shake{animation:none}.bk-liq{transition:none}.sb-num.bump{animation:none}}
+@media (max-width:420px){.tab{padding:9px 10px 7px;font-size:1.2rem}.sc{padding:14px 12px}}
+</style>
+
+<main class="wrap">
+  <div class="tbanner t-only" id="tbanner" hidden>
+    <span>Chế độ giáo viên đang bật. Các công cụ xem đáp án đang hiển thị.</span>
+    <button class="btn-quiet" type="button" id="t-lock">Khoá</button>
+  </div>
+
+  <header>
+    <div class="kicker">Khoa học tự nhiên 6 · Bài 11–14 · Trò chơi ôn tập</div>
+    <h1>Ôn tập Bài 11–14</h1>
+    <p class="byline">Thầy Tuấn Anh · TNIS</p>
+    <div class="tape" aria-hidden="true"></div>
+    <p class="lede">Mỗi ván chơi là một bộ thuật ngữ được trộn ngẫu nhiên từ Bài 11 (Oxygen và không khí), Bài 12 (Một số vật liệu), Bài 13 (Một số nguyên liệu) và Bài 14 (Một số nhiên liệu), nên không có hai ván nào giống nhau.</p>
+    <p class="lede">Trò chơi không tính giờ và không dùng để chấm điểm. Mỗi ván có một gợi ý, em hãy để dành khi thật cần. Đáp án gõ không dấu và viết liền (ví dụ: Không khí gõ là KHONGKHI), nhớ tắt bộ gõ tiếng Việt khi chơi.</p>
+  </header>
+
+  <div class="sb" id="sb" role="group" aria-label="Điểm">
+    <div class="sb-total"><span class="lbl">Tổng điểm</span><span class="sb-num" id="sb-total">0</span></div>
+    <div class="sb-parts">
+      <span>Tìm từ<b id="sb-ws">0</b></span><span>Ô chữ<b id="sb-cw">0</b></span><span>Xếp chữ<b id="sb-sc">0</b></span><span>Đoán chữ<b id="sb-hm">0</b></span>
+    </div>
+    <div class="sb-last" id="sb-last" role="status" aria-live="polite">Hãy ghi điểm ở cả bốn trò chơi.</div>
+    <div class="sb-actions"><button class="btn-quiet" type="button" id="sb-reset" aria-expanded="false" aria-controls="reset">Đặt lại tất cả</button><button class="btn" type="button" id="sb-final" aria-expanded="false" aria-controls="final">Điểm tổng kết</button></div>
+  </div>
+
+  <section class="reset" id="reset" hidden role="group" aria-labelledby="reset-h">
+    <h2 id="reset-h">Đặt lại tất cả</h2>
+    <p id="reset-msg" aria-live="polite"></p>
+    <div class="opts" id="reset-step1">
+      <button class="btn-danger" type="button" id="reset-continue">Tiếp tục</button>
+      <button class="btn" type="button" id="reset-cancel1">Huỷ</button>
+    </div>
+    <div class="opts" id="reset-step2" hidden>
+      <button class="btn-danger" type="button" id="reset-pts" disabled>Đặt lại tất cả: xoá điểm và các ván đang chơi</button>
+      <button class="btn-danger" type="button" id="reset-all" disabled>Giáo viên: xoá luôn cả câu hỏi đã dùng</button>
+      <button class="btn" type="button" id="reset-cancel2">Huỷ</button>
+    </div>
+    <p class="note" id="reset-note"></p>
+  </section>
+
+  <section class="final" id="final" hidden aria-labelledby="final-h">
+    <h2 id="final-h">Điểm tổng kết</h2>
+    <div class="final-num"><span id="final-num">0</span><small>điểm</small></div>
+    <dl class="final-list">
+      <div><dt>Tìm từ</dt><dd id="f-ws">0</dd></div>
+      <div><dt>Ô chữ</dt><dd id="f-cw">0</dd></div>
+      <div><dt>Xếp chữ</dt><dd id="f-sc">0</dd></div>
+      <div><dt>Đoán chữ</dt><dd id="f-hm">0</dd></div>
+    </dl>
+    <div class="opts">
+      <button class="btn" type="button" id="final-close">Chơi tiếp</button>
+      <button class="btn-quiet" type="button" id="final-reset">Đặt lại tất cả</button>
+    </div>
+    <p class="note">Điểm của em, các câu hỏi đã dùng và các ván đang chơi dở được lưu tự động trên thiết bị này, nên em có thể quay lại chơi tiếp. Chúng được giữ cho đến khi em bấm Đặt lại tất cả.</p>
+  </section>
+
+  <details class="rules">
+    <summary>Cách tính điểm</summary>
+    <div class="rg">
+      <div><h3>Tìm từ</h3><ul>
+        <li>Mỗi từ tìm được: Dễ 6, Vừa 9, Khó 12</li>
+        <li>Tìm đủ tất cả các từ mà không xem đáp án: thưởng 15, 22 hoặc 30</li>
+        <li>Xem một từ qua gợi ý: &minus;5, và từ đó không được điểm</li>
+        <li>Hiện cả danh sách từ: &minus;30 (một lần mỗi lưới)</li>
+        <li>Gợi ý: &minus;3</li></ul></div>
+      <div><h3>Ô chữ</h3><ul>
+        <li>Mỗi từ hoàn thành: Ngắn 9, Vừa 10, Dài 12</li>
+        <li>Hoàn thành cả ô chữ: thưởng 15% điểm của các từ</li>
+        <li>Kiểm tra mà thấy chữ sai: &minus;2</li>
+        <li>Gợi ý: &minus;3</li></ul></div>
+      <div><h3>Xếp chữ</h3><ul>
+        <li>Mỗi từ: Dễ 8, Vừa 12, Khó 16</li>
+        <li>Mỗi lần đoán sai trừ 1 điểm của từ đó</li>
+        <li>Gợi ý: &minus;3</li></ul></div>
+      <div><h3>Đoán chữ</h3><ul>
+        <li>Mỗi từ: Dễ 8, Vừa 12, Khó 16</li>
+        <li>Cộng thêm 1 điểm cho mỗi lượt đoán sai chưa dùng đến</li>
+        <li>Ẩn gợi ý: +3 điểm mỗi từ</li>
+        <li>Gợi ý: &minus;3</li></ul></div>
+    </div>
+    <p class="note">Một ván Xếp chữ hoặc Đoán chữ ở mức Vừa, không dùng trợ giúp, được khoảng 100 điểm; Tìm từ và Ô chữ được nhiều hơn (khoảng 150) vì mất nhiều thời gian hơn. Gợi ý bắt đầu bằng "Câu khó:" được thưởng thêm 2 điểm khi em giải đúng. Điểm có thể xuống dưới 0, nên đoán bừa hoặc xem đáp án quá nhiều có thể khiến tổng điểm bị âm.</p>
+    <p class="note">Mỗi câu hỏi chỉ được tính điểm một lần. Khi em bắt đầu một ván (gõ một chữ, tìm một từ, đoán một chữ hoặc nhờ trợ giúp), các câu hỏi của ván đó bị "dùng hết" và không quay lại nữa, nên mỗi ván mới luôn có câu hỏi mới. Tìm từ và Ô chữ có thể dùng lại cùng một đáp án nhưng với gợi ý khác. Xếp chữ và Đoán chữ không bao giờ lặp lại một từ. Khi hết câu hỏi, em hãy nhờ thầy cô đặt lại các câu hỏi đã dùng. Tổng điểm dưới 0 chỉ thầy cô mới đặt lại được. Nút Đặt lại tất cả yêu cầu em xác nhận hai lần.</p>
+  </details>
+
+  <div class="tabs" role="tablist" aria-label="Các trò chơi">
+    <button class="tab" role="tab" id="tab-ws" aria-selected="true" aria-controls="p-ws" type="button">Tìm từ</button>
+    <button class="tab" role="tab" id="tab-cw" aria-selected="false" aria-controls="p-cw" type="button">Ô chữ</button>
+    <button class="tab" role="tab" id="tab-sc" aria-selected="false" aria-controls="p-sc" type="button">Xếp chữ</button>
+    <button class="tab" role="tab" id="tab-hm" aria-selected="false" aria-controls="p-hm" type="button">Đoán chữ</button>
+  </div>
+
+  <section class="panel" id="p-ws" role="tabpanel" aria-labelledby="tab-ws">
+    <div class="opts">
+      <div class="field">
+        <label for="ws-level">Độ khó</label>
+        <select id="ws-level">
+          <option value="easy">Dễ: ngang và dọc · 6 điểm/từ</option>
+          <option value="med" selected>Vừa: thêm đường chéo · 9 điểm/từ</option>
+          <option value="hard">Khó: mọi hướng, cả đọc ngược · 12 điểm/từ</option>
+        </select>
+      </div>
+      <button class="btn-quiet" type="button" id="ws-list-btn">Hiện danh sách từ (&minus;30)</button>
+      <button class="btn-quiet" type="button" id="ws-hint" data-cost="3">Gợi ý (còn 1, &minus;3)</button>
+      <button class="btn-quiet" type="button" id="ws-new">Lưới mới</button>
+      <button class="btn-quiet t-only" type="button" id="ws-show">Hiện tất cả các từ</button>
+    </div>
+    <p class="note left" id="left-ws"></p>
+    <div class="status" id="ws-status" role="status" aria-live="polite"></div>
+    <div class="ws">
+      <div class="ws-grid" id="ws-grid" aria-label="Lưới tìm từ. Kéo qua các chữ cái để chọn một từ."></div>
+      <ul class="ws-list" id="ws-list"></ul>
+    </div>
+    <p class="note">Nhấn vào chữ cái đầu tiên, kéo đến chữ cái cuối cùng rồi thả ra. Các từ nằm trên một đường thẳng và viết liền, không dấu. Hãy đọc từng gợi ý để tìm từ tương ứng. Bí quá? Bấm Xem từ dưới gợi ý.</p>
+  </section>
+
+  <section class="panel" id="p-cw" role="tabpanel" aria-labelledby="tab-cw" hidden>
+    <div class="opts">
+      <div class="field">
+        <label for="cw-size">Kích cỡ</label>
+        <select id="cw-size">
+          <option value="short">Ngắn: 8 từ · 9 điểm/từ</option>
+          <option value="std" selected>Vừa: 12 từ · 10 điểm/từ</option>
+          <option value="long">Dài: khoảng 14 từ · 12 điểm/từ</option>
+        </select>
+      </div>
+    </div>
+    <p class="note left" id="left-cw"></p>
+    <div class="status" id="cw-status" role="status" aria-live="polite"></div>
+    <div class="cw">
+      <div class="cw-left">
+        <div class="cw-banner" id="cw-banner" aria-live="polite"></div>
+        <div class="cw-grid" id="cw-grid"></div>
+        <div class="opts">
+          <button class="btn" type="button" id="cw-check">Kiểm tra (&minus;2 nếu sai)</button>
+          <button class="btn-quiet" type="button" id="cw-hint" data-cost="3">Gợi ý (còn 1, &minus;3)</button>
+          <button class="btn-quiet" type="button" id="cw-clear">Xoá hết</button>
+          <button class="btn-quiet" type="button" id="cw-new">Ô chữ mới</button>
+        </div>
+        <div class="opts t-only">
+          <button class="btn-quiet" type="button" id="cw-rl">Hiện một chữ</button>
+          <button class="btn-quiet" type="button" id="cw-rw">Hiện cả từ</button>
+          <button class="btn-quiet" type="button" id="cw-ra">Hiện tất cả</button>
+        </div>
+        <p class="note">Bấm vào một ô để gõ. Bấm lại vào ô đó để đổi giữa hàng ngang và hàng dọc. Dùng phím mũi tên để di chuyển. Gợi ý sẽ điền sẵn chữ vào ô đang chọn. Gõ không dấu, viết liền.</p>
+      </div>
+      <div class="cw-clues">
+        <div><h3>Hàng ngang</h3><ol id="cw-across"></ol></div>
+        <div><h3>Hàng dọc</h3><ol id="cw-down"></ol></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-sc" role="tabpanel" aria-labelledby="tab-sc" hidden>
+    <div class="opts">
+      <div class="field">
+        <label for="sc-level">Độ khó</label>
+        <select id="sc-level">
+          <option value="easy">Dễ: 4 đến 7 chữ cái · 8 điểm/từ</option>
+          <option value="med" selected>Vừa: 8 đến 10 chữ cái · 12 điểm/từ</option>
+          <option value="hard">Khó: từ 11 chữ cái trở lên · 16 điểm/từ</option>
+        </select>
+      </div>
+    </div>
+    <p class="note left" id="left-sc"></p>
+    <div class="status" id="sc-status" role="status" aria-live="polite"></div>
+    <div class="sc" id="sc-card">
+      <div class="lbl" id="sc-count"></div>
+      <div class="sc-letters" id="sc-letters" aria-live="polite"></div>
+      <p class="sc-clue" id="sc-clue"></p>
+      <div class="sc-row">
+        <label for="sc-in" class="lbl" style="width:100%">Từ của em</label>
+        <input type="text" id="sc-in" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button class="btn" type="button" id="sc-check">Kiểm tra</button>
+        <button class="btn-quiet" type="button" id="sc-hint" data-cost="3">Gợi ý (còn 1, &minus;3)</button>
+        <button class="btn-quiet" type="button" id="sc-skip">Bỏ qua</button>
+        <button class="btn-quiet t-only" type="button" id="sc-ans">Hiện đáp án</button>
+      </div>
+      <div class="note" id="sc-hinttext" aria-live="polite"></div>
+    </div>
+    <div><button class="btn-quiet" type="button" id="sc-again">Bộ mới</button></div>
+  </section>
+
+  <section class="panel" id="p-hm" role="tabpanel" aria-labelledby="tab-hm" hidden>
+    <div class="opts">
+      <div class="field">
+        <label for="hm-level">Độ khó</label>
+        <select id="hm-level">
+          <option value="easy">Dễ: được sai 8 lần · 8 điểm/từ</option>
+          <option value="med" selected>Vừa: được sai 6 lần · 12 điểm/từ</option>
+          <option value="hard">Khó: được sai 4 lần · 16 điểm/từ</option>
+        </select>
+      </div>
+      <label class="chk"><input type="checkbox" id="hm-clue" checked> Hiện gợi ý (ẩn đi được +3 điểm/từ)</label>
+      <button class="btn-quiet" type="button" id="hm-hint" data-cost="3">Gợi ý (còn 1, &minus;3)</button>
+      <button class="btn-quiet" type="button" id="hm-next">Từ tiếp theo</button>
+      <button class="btn-quiet t-only" type="button" id="hm-reveal">Hiện từ</button>
+    </div>
+    <p class="note left" id="left-hm"></p>
+    <div class="status" id="hm-status" role="status" aria-live="polite"></div>
+    <div class="hm">
+      <figure class="hm-fig">
+        <svg viewBox="0 0 200 220" id="hm-svg" role="img" aria-label="Cốc beaker đầy dần lên theo số lần đoán sai">
+          <defs><clipPath id="hm-clip"><path d="M62,30 L62,180 Q62,194 76,194 L124,194 Q138,194 138,180 L138,30 Z"/></clipPath></defs>
+          <rect class="bk-liq" id="hm-liq" x="50" y="178" width="100" height="16" clip-path="url(#hm-clip)"/>
+          <path class="bk-out" d="M52,24 L62,30 L62,180 Q62,194 76,194 L124,194 Q138,194 138,180 L138,30 L148,24"/>
+          <line class="bk-tick" x1="62" x2="76" y1="140" y2="140"/>
+          <line class="bk-tick" x1="62" x2="76" y1="105" y2="105"/>
+          <line class="bk-tick" x1="62" x2="76" y1="68" y2="68"/>
+          <circle class="bk-drip" cx="152" cy="46" r="5"/>
+          <circle class="bk-drip" cx="156" cy="74" r="4"/>
+          <circle class="bk-drip" cx="48" cy="60" r="4"/>
+        </svg>
+        <figcaption id="hm-lives"></figcaption>
+      </figure>
+      <div class="hm-main">
+        <div class="lbl" id="hm-count"></div>
+        <div class="hm-word" id="hm-word" aria-live="polite"></div>
+        <p class="hm-clue" id="hm-clue-text"></p>
+        <div class="hm-keys" id="hm-keys" role="group" aria-label="Các chữ cái"></div>
+        <p class="note">Gõ trên bàn phím hoặc bấm vào các chữ cái. Khi hết lượt đoán sai, cốc beaker sẽ tràn.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <button class="link" type="button" id="t-open">Giáo viên</button>
+    <div class="tform" id="t-form" hidden>
+      <label for="t-code" class="lbl">Mã giáo viên</label>
+      <input type="password" id="t-code" autocomplete="off">
+      <button class="btn-quiet" type="button" id="t-go">Mở khoá</button>
+      <span id="t-msg" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var TERMS = {
+    l11: [
+      ["Oxygen","Chất khí không màu, không mùi, không vị, ít tan trong nước; cần cho sự hô hấp và sự cháy"],
+      ["Oxygen","Thợ lặn, người leo núi cao và phi hành gia phải mang bình chứa chất khí này để thở",1],
+      ["Nitrogen","Khí chiếm khoảng 78% thể tích không khí, nhiều nhất trong các khí"],
+      ["Nitrogen","Khi mưa dông có sấm sét, khí này biến thành chất có lợi cho cây, như một loại phân bón tự nhiên",1],
+      ["Carbon dioxide","Khí cây xanh cần cho quang hợp; lượng tăng quá nhiều làm Trái Đất ấm lên"],
+      ["Carbon dioxide","Nến cháy trong oxygen sinh ra hơi nước và khí này; nước vôi trong hấp thụ hết nó",1],
+      ["Không khí","Hỗn hợp nhiều chất khí bao quanh Trái Đất, gồm khoảng 78% nitrogen, 21% oxygen và 1% khí khác"],
+      ["Không khí","Em không nhìn thấy nó nhưng nó bao quanh em từng giây, vừa điều hoà khí hậu vừa che chắn Trái Đất khỏi thiên thạch",1],
+      ["Hô hấp","Quá trình sinh vật cần oxygen để thực hiện; động vật và thực vật đều có"],
+      ["Sự cháy","Quá trình cần oxygen; không có oxygen thì nó không thể xảy ra"],
+      ["Quang hợp","Quá trình cây xanh hút carbon dioxide và thải ra oxygen"],
+      ["Quang hợp","Nhờ cây xanh và tảo làm việc này mà không khí vẫn giữ khoảng 21% oxygen dù oxygen bị dùng đi liên tục",1],
+      ["Hơi nước","Chất có trong không khí, gặp bề mặt lạnh thì ngưng tụ thành giọt"],
+      ["Hơi nước","Giọt nước bám bên ngoài cốc nước đá chứng tỏ trong không khí có chất này",1],
+      ["Ngưng tụ","Quá trình hơi nước gặp lạnh chuyển thành giọt nước"],
+      ["Nến","Vật cháy trong thí nghiệm úp cốc để tìm xem oxygen chiếm bao nhiêu phần không khí"],
+      ["Nước vôi trong","Dung dịch hấp thụ hết khí carbon dioxide sinh ra khi nến cháy"],
+      ["Cốc thuỷ tinh","Dụng cụ chia thành 5 phần bằng nhau, úp lên nến đang cháy trong chậu nước"],
+      ["Thiên thạch","Khối đá từ vũ trụ lao về Trái Đất, cọ xát với không khí thì bốc cháy hoặc bay hơi gần hết"],
+      ["Thiên thạch","Nhờ lớp không khí bao quanh Trái Đất mà phần lớn những vật này không chạm được xuống mặt đất",1],
+      ["Helium","Khí chiếm 1% thể tích trong bình dưỡng khí Trimix của thợ lặn"],
+      ["Trimix","Loại bình dưỡng khí dùng trong lặn kĩ thuật, chứa 21% oxygen, 78% nitrogen và 1% helium"],
+      ["Sấm sét","Hiện tượng trong mưa dông giúp nitrogen chuyển hoá thành chất có lợi cho cây"],
+      ["Phân bón","Chất cung cấp dinh dưỡng cho cây; nitrogen trở thành loại tự nhiên của nó nhờ mưa dông"],
+      ["Ô nhiễm","Tình trạng của không khí khi thành phần của nó bị thay đổi, có khói, bụi, khí độc"],
+      ["Núi lửa","Nguyên nhân tự nhiên gây ô nhiễm không khí khi phun ra khói, bụi và khí độc"],
+      ["Mưa acid","Hậu quả của khí thải độc hại, phá huỷ công trình và làm giảm chất lượng đất"],
+      ["Băng","Ở hai địa cực, nó tan ra khi Trái Đất ấm lên"],
+      ["Nước biển dâng","Hậu quả cuối cùng trong chuỗi: carbon dioxide tăng, Trái Đất ấm lên, băng hai cực tan"],
+      ["Khí thải","Chất khí độc hại từ ô tô và nhà máy làm ô nhiễm không khí"],
+      ["Năng lượng sạch","Năng lượng từ Mặt Trời, gió, nước, giúp giữ không khí trong lành"],
+      ["Cây xanh","Trồng và bảo vệ chúng giúp giữ nguồn oxygen cho Trái Đất"],
+      ["Bình dưỡng khí","Thiết bị thợ lặn, nhà du hành mang theo khi đến nơi thiếu oxygen"],
+      ["Lá chắn","Vai trò của không khí đối với Trái Đất trước các thiên thạch từ vũ trụ"],
+      ["Điều hoà","Nhờ không khí luân chuyển mà khí hậu Trái Đất được ... để không quá nóng hoặc quá lạnh"],
+      ["Hoá lỏng","Sự chuyển oxygen từ thể khí sang thể lỏng ở nhiệt độ −183 °C"],
+      ["Thể khí","Thể của oxygen ở nhiệt độ phòng"],
+      ["Xanh nhạt","Màu của oxygen khi ở thể lỏng và thể rắn"],
+      ["Nhiệt độ","Yếu tố quyết định oxygen ở thể rắn, lỏng hay khí"],
+      ["Hoà tan","Trong nước có một lượng oxygen ... rất nhỏ, đủ cho cá và sinh vật khác hô hấp"],
+      ["Phi hành gia","Người du hành vũ trụ, phải mang theo oxygen khi ra ngoài không gian"],
+      ["Thể tích","Các con số 78%, 21%, 1% của không khí được tính theo đại lượng này"],
+      ["Rừng","Bị chặt hoặc cháy thì lượng oxygen sinh ra ít đi, nên cần được bảo vệ"],
+      ["Trái Đất","Hành tinh có lớp không khí bao quanh, nơi có sự sống"],
+      ["Khí độc","Cùng với khói và bụi, nó gây bệnh nguy hiểm, nhất là bệnh đường hô hấp"],
+      ["Phương tiện công cộng","Đi xe buýt, tàu điện thay xe riêng giúp giảm khí thải"],
+      ["Thành phần không khí","Nitrogen 78%, oxygen 21%, 1% khí khác: đó là ... của không khí theo thể tích"],
+      ["Bệnh đường hô hấp","Hậu quả khi hít phải bụi, khói và khí độc trong không khí ô nhiễm"],
+      ["Cháy rừng","Có thể do tự nhiên hoặc do con người, thải khói bụi làm ô nhiễm không khí"],
+      ["Trái Đất ấm lên","Hậu quả khi lượng carbon dioxide tăng, kéo theo băng hai địa cực tan",1]
+    ],
+    l12: [
+      ["Vật liệu","Chất dùng để làm ra đồ vật"],
+      ["Vật liệu","Lịch sử loài người đặt tên theo thứ này: thời đại đồ đá, đồ đồng, đồ sắt",1],
+      ["Vật liệu tự nhiên","Nhóm gồm đá và gỗ, có sẵn trong thiên nhiên"],
+      ["Kim loại","Vật liệu có ánh kim, dẫn điện và dẫn nhiệt tốt, kéo được thành sợi và dát mỏng"],
+      ["Kim loại","Ruột dây điện, nồi nấu ăn và cầu đều làm từ vật liệu này",1],
+      ["Thuỷ tinh","Vật liệu trong suốt, cứng nhưng giòn, dễ vỡ"],
+      ["Thuỷ tinh","Cửa kính, bình hoa và chai lọ làm bằng vật liệu này nên phải cầm nhẹ tay",1],
+      ["Nhựa","Vật liệu dẻo, nhẹ, không dẫn điện, dễ biến dạng khi gặp nhiệt"],
+      ["Nhựa","Ghế ngồi, ống dẫn nước và vỏ dây điện thường làm bằng vật liệu này",1],
+      ["Gốm sứ","Hai vật liệu làm bát đĩa, chum vại, chậu hoa; không bị ăn mòn, cứng nhưng giòn"],
+      ["Cao su","Vật liệu đàn hồi, bền, không thấm nước, dễ cháy"],
+      ["Cao su","Lốp xe và găng tay thợ điện làm từ vật liệu đàn hồi này",1],
+      ["Dẫn điện","Tính chất của kim loại làm bóng đèn sáng trong mạch pin, bóng đèn, hai kẹp"],
+      ["Dẫn nhiệt","Tính chất làm thìa kim loại nóng lên nhanh nhất khi nhúng vào nước nóng"],
+      ["Dẫn nhiệt","Gỗ và nhựa làm quai nồi vì chúng có tính chất này kém, nên tay không bị bỏng",1],
+      ["Cách điện","Nhựa, gỗ, cao su không làm đèn sáng vì chúng có tính chất này"],
+      ["Ánh kim","Vẻ sáng bóng đặc trưng của kim loại"],
+      ["Trong suốt","Tính chất của thuỷ tinh cho phép ánh sáng đi qua"],
+      ["Đàn hồi","Tính chất của cao su: bị kéo giãn hay nén rồi trở lại hình dạng ban đầu"],
+      ["Giòn","Cứng nhưng ... nên dễ vỡ: tính chất chung của thuỷ tinh và gốm sứ"],
+      ["Gỉ sắt","Lớp màu nâu phủ trên đinh vít kim loại để nơi ẩm"],
+      ["Vỏ bọc","Phần nhựa hoặc cao su bên ngoài dây điện, giúp tránh điện giật"],
+      ["Điện giật","Nguy hiểm xảy ra khi tay chạm vào dây điện bị hở vỏ"],
+      ["Quai nồi","Bộ phận làm bằng gỗ hoặc nhựa để tay cầm không bị bỏng"],
+      ["Bỏng","Tay dễ bị ... khi chạm vào thân nồi kim loại đang nóng"],
+      ["Đồ đồng","Thời đại nằm giữa thời đại đồ đá và thời đại đồ sắt"],
+      ["Reduce","Nguyên tắc 3R: giảm thiểu việc sử dụng, như mang túi vải đi chợ"],
+      ["Reduce","Không dùng túi nylon một lần là hành động thuộc nguyên tắc này trong 3R",1],
+      ["Reuse","Nguyên tắc 3R: dùng lại chai lọ thuỷ tinh, hộp cũ, quần áo cũ"],
+      ["Recycle","Nguyên tắc 3R: tái chế, như gom giấy báo, sách cũ, đồ điện hỏng"],
+      ["PETE","Kí hiệu số 1 dưới đáy chai nước ngọt, cho biết chai chỉ nên dùng một lần"],
+      ["PETE","Dùng đi dùng lại chai mang kí hiệu này có thể làm hoà tan hoá chất gây hại cho cơ thể",1],
+      ["Đồ vật","Xe đạp, bàn học, ghế ngồi; mỗi thứ làm từ một hay nhiều vật liệu"],
+      ["Lốp xe","Đồ vật làm bằng cao su vì đàn hồi, bền, không thấm nước"],
+      ["Nồi đất","Đồ vật làm bằng gốm"],
+      ["Dễ cháy","Gỗ và cao su cần để xa bếp, lửa vì có tính chất này"],
+      ["Biến dạng","Nhựa dễ ... khi gặp nhiệt nên phải để xa lửa"],
+      ["Mối mọt","Đồ gỗ để nơi ẩm có thể bị chúng ăn hỏng"],
+      ["Mạch điện","Bộ dụng cụ gồm pin, bóng đèn, dây nối và hai kẹp để thử tính dẫn điện"],
+      ["Bóng đèn","Sáng lên khi vật liệu được kẹp vào mạch là vật dẫn điện"],
+      ["Thìa","Dụng cụ có bốn loại (kim loại, sứ, nhựa, gỗ) nhúng vào nước nóng để thử tính dẫn nhiệt"],
+      ["Nước nóng","Khoảng 90 °C, được rót vào bát để thử dẫn nhiệt của các thìa"],
+      ["Túi vải","Thay thế túi nylon một lần khi đi chợ để giảm thiểu rác"],
+      ["Vật liệu nhân tạo","Nhóm gồm gốm, sứ, thuỷ tinh, kim loại, nhựa, cao su do con người chế tạo"],
+      ["Tính chất","Đặc điểm của vật liệu, quyết định công dụng của nó"],
+      ["Công dụng","Việc một đồ vật làm được, do tính chất của vật liệu quyết định"],
+      ["Thí nghiệm công bằng","Giữ giống nhau lượng nước, thời gian và kích thước thìa khi so sánh các vật liệu"]
+    ],
+    l13: [
+      ["Nguyên liệu","Thứ lấy từ tự nhiên hoặc điều chế để chế biến thành sản phẩm mới"],
+      ["Nguyên liệu","Mía để làm đường, quặng sắt để luyện gang đều được gọi như vậy",1],
+      ["Nguyên liệu tự nhiên","Loại nguyên liệu lấy trực tiếp từ thiên nhiên như đất, đá, quặng, mía"],
+      ["Nguyên liệu nhân tạo","Loại nguyên liệu gồm hoá chất cơ bản điều chế từ dầu mỏ, dùng làm phân bón, thuốc, mĩ phẩm, len, tơ"],
+      ["Đá vôi","Loại đá có thành phần chính là calcium carbonate"],
+      ["Đá vôi","Vạch đinh sắt thì bị xước, nhỏ acid vào thì sủi bọt khí: đó là loại đá này",1],
+      ["Calcium carbonate","Thành phần chính của đá vôi"],
+      ["Vôi sống","Chất thu được khi nung đá vôi trong lò nung vôi"],
+      ["Vôi sống","Khi cho nó tác dụng với nước sẽ tạo ra vôi tôi dùng trong xây dựng",1],
+      ["Lò nung vôi","Thiết bị nung đá vôi trộn với than ở nhiệt độ cao để thu được vôi sống"],
+      ["Vôi tôi","Chất tạo thành khi vôi sống tác dụng với nước, dùng làm vật liệu xây dựng"],
+      ["Quặng","Loại đất đá chứa các chất có giá trị với hàm lượng lớn"],
+      ["Quặng sắt","Nguyên liệu để sản xuất gang và thép, có nhiều ở Thái Nguyên"],
+      ["Bauxite","Tên quốc tế của quặng dùng để sản xuất nhôm (đọc là bôxit)"],
+      ["Nhôm","Kim loại sản xuất từ quặng bauxite, dùng chế tạo máy bay, ô tô"],
+      ["Gang","Sản phẩm của lò cao, chứa hơn 95% sắt và nhiều carbon"],
+      ["Thép","Luyện từ gang bằng cách giảm lượng carbon và thêm kim loại khác; có nhiều công dụng hơn gang"],
+      ["Thép","Gang được thổi oxygen để giảm carbon rồi thêm chromium, nickel, manganese sẽ thành vật liệu này",1],
+      ["Lò cao","Nơi nung quặng sắt với than cốc ở nhiệt độ rất cao để thu được gang"],
+      ["Than cốc","Chất đốt dùng cùng quặng sắt trong lò cao"],
+      ["Cửa tháo xỉ","Nơi lấy chất thải nhẹ, nổi trên gang lỏng, ra khỏi lò cao"],
+      ["Clinker","Sản phẩm khi nung đất sét, đá vôi, cát trong lò quay; nghiền tiếp thành xi măng"],
+      ["Xi măng","Vật liệu xây dựng sản xuất từ đất sét, đá vôi và cát"],
+      ["Đất sét","Cùng đá vôi và cát để làm xi măng; còn dùng làm gạch, ngói, đồ gốm"],
+      ["Mía","Nguyên liệu để sản xuất đường"],
+      ["Phân lân","Loại phân bón chứa phosphorus, sản xuất từ quặng phosphorus"],
+      ["Quặng đồng","Nguyên liệu để sản xuất kim loại dẫn điện tốt, dùng làm dây dẫn điện"],
+      ["Titanium","Kim loại nhẹ, bền, chịu mài mòn, nóng chảy ở nhiệt độ cao; dùng trong động cơ phản lực và khung xe đạp thể thao"],
+      ["Phosphorus","Chất sản xuất từ quặng, dùng làm phân lân tốt cho cây trồng"],
+      ["Chế biến","Bước nung, nghiền, luyện, chưng cất nằm giữa nguyên liệu và sản phẩm"],
+      ["Sản phẩm","Thứ tạo ra sau khi chế biến nguyên liệu, như vôi, xi măng, thép, đường"],
+      ["Tài nguyên hữu hạn","Nguồn như quặng, dùng mãi sẽ cạn và không thể tái tạo"],
+      ["Khai thác","Việc lấy quặng, đá vôi từ thiên nhiên, cần làm hợp lí để bảo vệ môi trường"],
+      ["Tạp chất","Đất sét, cát lẫn trong đá vôi, làm đá có nhiều màu"],
+      ["Đinh sắt","Dụng cụ dùng để vạch lên đá vôi, thử xem đá có bị trầy xước không"],
+      ["Acid","Nhỏ chất này lên đá vôi thì đá sủi bọt khí; phải đeo găng tay, kính bảo hộ khi dùng"],
+      ["Bọt khí","Hiện tượng quan sát được khi nhỏ acid lên đá vôi"],
+      ["Thái Nguyên","Tỉnh miền Bắc có mỏ quặng sắt"],
+      ["Tây Nguyên","Vùng có nhiều mỏ quặng nhôm của nước ta"],
+      ["Lò quay","Thiết bị nung đất sét, đá vôi, cát thành clinker"],
+      ["Bê tông","Hỗn hợp xây dựng có trộn đá vôi đập nhỏ"],
+      ["Chất độn","Bột nhẹ chế từ đá vôi được dùng làm ... trong sản xuất cao su, xà phòng"],
+      ["Nung","Cách chế biến đá vôi ở nhiệt độ cao để thành vôi sống"],
+      ["Khai thác hợp lí","Cách dùng quặng và đá vôi tiết kiệm để giữ tài nguyên và bảo vệ môi trường"],
+      ["Gang thép","Hai sản phẩm có thành phần chính là sắt, dùng trong xây dựng, chế tạo máy, dụng cụ"],
+      ["Hoá chất cơ bản","Điều chế từ dầu mỏ, dùng sản xuất phân bón, thuốc, mĩ phẩm, len, tơ"],
+      ["Dầu gội","Một sản phẩm làm từ nguyên liệu nhân tạo có nguồn gốc dầu mỏ"],
+      ["Quặng phosphorus","Nguyên liệu để sản xuất phosphorus và các loại phân lân"],
+      ["Luyện thép","Thổi oxygen vào gang để giảm lượng carbon, rồi thêm kim loại khác"],
+      ["Kính bảo hộ","Dụng cụ phải đeo cùng găng tay khi nhỏ acid lên đá vôi"],
+      ["Núi đá vôi","Địa hình tập trung ở phía Bắc và Bắc Trung Bộ, nơi khai thác đá vôi"],
+      ["Khai thác đá vôi","Hoạt động nổ mìn, nghiền, vận chuyển gây bụi, tiếng ồn và làm mất rừng"],
+      ["Nguyên liệu tự nhiên","Đá vôi lấy từ núi và quặng sắt lấy từ mỏ đều thuộc loại nguyên liệu này",1],
+      ["Quặng sắt","Gang và thép đều được làm ra từ loại quặng này",1],
+      ["Than cốc","Chất đốt trộn cùng quặng sắt; thổi không khí nóng vào để lò cao đạt nhiệt độ rất cao",1],
+      ["Xi măng","Đất sét, đá vôi, cát được nghiền, trộn, nung thành clinker rồi nghiền tiếp thành vật liệu xây dựng này",1]
+    ],
+    l14: [
+      ["Nhiên liệu","Chất cháy được và khi cháy toả nhiều nhiệt"],
+      ["Nhiên liệu","Gỗ, than, xăng, khí gas dùng để sưởi ấm, nấu ăn, chạy động cơ, phát điện",1],
+      ["Nhiên liệu hoá thạch","Than đá, dầu mỏ, khí thiên nhiên hình thành từ xác sinh vật bị chôn vùi hàng triệu năm"],
+      ["Than đá","Nhiên liệu rắn nhiều tạp chất, nhiều nhất ở Quảng Ninh; cháy sinh ra nhiều chất độc hại"],
+      ["Than đá","Hầu hết nhiên liệu nổi trên nước, chỉ loại này là chìm xuống",1],
+      ["Dầu mỏ","Chất lỏng nằm cùng khí thiên nhiên trong mỏ dầu; chưng cất thu được xăng, dầu hoả, khí đốt"],
+      ["Khí thiên nhiên","Khí đốt nằm cùng dầu mỏ trong mỏ dầu, làm nhiên liệu cho nhà máy điện"],
+      ["Xăng","Nhiên liệu lỏng chạy ô tô, xe máy; rất dễ bắt lửa, nhẹ hơn nước và không tan trong nước"],
+      ["Xăng","Mở nắp bình ngửi thấy mùi đặc trưng vì nhiên liệu lỏng này dễ bay hơi",1],
+      ["Dầu hoả","Nhiên liệu lỏng dùng thắp đèn và đun nấu, khó bắt lửa hơn xăng"],
+      ["Cồn","Nhiên liệu lỏng duy nhất tan được trong nước"],
+      ["Khí gas","Nhiên liệu thể khí dùng cho bếp gas; người ta thêm chất tạo mùi để phát hiện khi rò rỉ"],
+      ["Củi","Nhiên liệu rắn lấy từ cây, bắt lửa chậm, dùng nấu ăn và sưởi ấm"],
+      ["Chưng cất","Đun nóng dầu thô để tách thành khí đốt, xăng, dầu hoả"],
+      ["Dầu thô","Dầu lấy từ mỏ, là hỗn hợp nhiều chất, cần chưng cất mới dùng được"],
+      ["Mỏ dầu","Nơi có khí ở trên cùng, dầu ở giữa, nước ở dưới cùng"],
+      ["Bạch Hổ","Tên một mỏ dầu lớn ở biển Đông của nước ta"],
+      ["Quảng Ninh","Tỉnh có nhiều than đá nhất nước ta, như Cửa Ông, Vàng Danh"],
+      ["Chất cháy","Một trong ba điều kiện để có đám cháy, cùng với oxygen và nhiệt độ đủ cao"],
+      ["Tam giác cháy","Mô hình ba điều kiện cần có để xảy ra đám cháy; bỏ một cạnh thì lửa tắt"],
+      ["Mồi lửa","Thứ giúp nhiên liệu bắt cháy nhờ cung cấp nhiệt độ đủ cao"],
+      ["Khoá van","Việc nên làm đầu tiên khi ngửi thấy mùi gas hoặc khi nấu xong bằng bếp gas"],
+      ["Đậy vung","Cách dập chảo dầu ăn đang cháy bằng cách không cho oxygen vào"],
+      ["Dội nước","Cách làm SAI khi dập đám cháy xăng, dầu, dầu ăn"],
+      ["Dội nước","Dầu nhẹ hơn nước, nổi lên và bắn ra nên tuyệt đối không được làm thế này với chảo dầu cháy",1],
+      ["Cát","Vật liệu dùng để dập đám cháy xăng, dầu hoặc vùi bếp than"],
+      ["Bình chữa cháy","Thiết bị dùng để dập đám cháy xăng, dầu, gas"],
+      ["Khăn ướt","Phủ lên chảo dầu đang cháy để cắt oxygen"],
+      ["Carbon monoxide","Khí rất độc sinh ra khi đốt than, củi trong phòng kín thiếu oxygen"],
+      ["Phòng kín","Không được đốt than, củi trong nơi này vì sinh ra khí độc gây ngạt"],
+      ["Năng lượng tái tạo","Loại năng lượng dùng mãi không hết, ít gây ô nhiễm: mặt trời, gió, thuỷ điện"],
+      ["Thuỷ điện","Năng lượng tái tạo từ dòng nước; Hoà Bình, Sơn La có nhà máy lớn"],
+      ["Địa nhiệt","Năng lượng tái tạo lấy từ nhiệt trong lòng đất"],
+      ["Mặt trời","Điện từ nguồn này phát nhiều ở các tỉnh nhiều nắng như Ninh Thuận, Bình Thuận"],
+      ["Điện gió","Dạng năng lượng tái tạo phụ thuộc thời tiết, phát yếu khi lặng gió"],
+      ["Sinh học","Dạng năng lượng tái tạo, cùng thuỷ điện, địa nhiệt, mặt trời, gió"],
+      ["An ninh năng lượng","Bảo đảm đủ năng lượng cho mọi hoạt động của một quốc gia"],
+      ["Đá cháy","Còn gọi là băng cháy (methane hydrate), có rất nhiều ở sâu dưới biển Bắc cực"],
+      ["Không tái tạo","Nhiên liệu hoá thạch thuộc loại năng lượng này vì mất hàng triệu năm mới hình thành"],
+      ["Cạn kiệt","Nhiên liệu hoá thạch sẽ dần ... vì có hạn"],
+      ["Khói bụi","Cùng khí độc, do nhiên liệu hoá thạch cháy sinh ra, làm ô nhiễm không khí"],
+      ["Nhiệt điện","Loại nhà máy dùng than đá làm nhiên liệu để phát điện"],
+      ["Thể rắn","Thể của than đá và củi"],
+      ["Thể lỏng","Thể của xăng, dầu hoả và cồn"],
+      ["Bay hơi","Xăng, dầu dễ ... nên ngửi thấy mùi khi mở nắp bình"],
+      ["Chất tạo mùi","Thứ được thêm vào khí gas để phát hiện khi rò rỉ"],
+      ["Tiết kiệm","Dùng nhiên liệu an toàn và ... là cách bảo vệ nguồn nhiên liệu có hạn"],
+      ["Đổ xăng","Khi làm việc này phải tắt máy xe, không hút thuốc, không dùng lửa"],
+      ["Động cơ","Bộ phận của ô tô, xe máy chạy bằng xăng"],
+      ["Bếp than","Đám cháy có thể dập bằng cách tưới nước hoặc phủ cát"],
+      ["Dập tắt đám cháy","Loại bỏ một trong ba điều kiện cháy để làm được việc này"],
+      ["Điều kiện cháy","Chất cháy, oxygen và nhiệt độ đủ cao là ba ... để có đám cháy"],
+      ["Cắt oxygen","Đậy vung hoặc phủ chăn ướt lên đám cháy nhằm làm việc này"],
+      ["Hạ nhiệt độ","Tưới nước lên than, củi, giấy đang cháy nhằm làm việc này"],
+      ["Nhà máy điện","Nơi dùng than, dầu, khí hoặc dòng nước, ánh nắng, gió để tạo ra điện"],
+      ["Dầu nặng","Thành phần tách ra ở nhiệt độ cao nhất khi chưng cất dầu thô (mở rộng)"],
+      ["Khí đốt","Thành phần nhẹ nhất, tách ra đầu tiên khi chưng cất dầu thô"],
+      ["Chưng cất","Dầu thô là hỗn hợp, mỗi chất sôi ở nhiệt độ khác nhau nên người ta làm việc này để tách chúng",1],
+      ["Khoá van","Muốn dập bếp gas đang cháy, hãy cắt nguồn nhiên liệu bằng việc làm này",1],
+      ["Dầu hoả","Nhiên liệu lỏng nổi trên nước, dùng cho đèn dầu nhờ có bấc, cháy chậm hơn xăng",1],
+      ["Nhiên liệu hoá thạch","Dùng chúng thải khí làm Trái Đất nóng lên và chúng mất hàng triệu năm mới hình thành",1]
+    ]
+  };
+  var T_HASH = '8eb82866d9cbd538034d9758cd9eb2ba664c8ec9062d5dc934cb0e82ba3aff4c';
+
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var isTeacher = function(){ return document.body.classList.contains('teacher'); };
+  function hintBtn(btn, used){ var c = btn.getAttribute('data-cost') || '2'; btn.disabled = used; btn.textContent = used ? 'Đã dùng gợi ý' : 'Gợi ý (còn 1, \u2212' + c + ')'; }
+
+  /* ---------- points ---------- */
+  var WS_PTS = { easy: 6, med: 9, hard: 12 }, WS_BONUS = { easy: 15, med: 22, hard: 30 };
+  var WS_REVEAL = 5, WS_LIST = 30, WS_HINT = 3, TRICKY = 2;
+  var CW_N = { short: 8, std: 12, long: 18 }, CW_PPW = { short: 9, std: 10, long: 12 };
+  var CW_HINT = 3, CW_CHECK = 2;
+  var SC_BASE = { easy: 8, med: 12, hard: 16 }, SC_HINT = 3;
+  var SC_LEN = {
+    easy: function(w){ return w.length >= 4 && w.length <= 7; },
+    med: function(w){ return w.length >= 8 && w.length <= 10; },
+    hard: function(w){ return w.length >= 11; }
+  };
+  var HM_BASE = { easy: 8, med: 12, hard: 16 }, HM_MAX = { easy: 8, med: 6, hard: 4 }, HM_HINT = 3, HM_NOCLUE = 3;
+  var KEYS = ['ws', 'cw', 'sc', 'hm'], SKEY = 'khtn6B1114Points';
+  var score = { ws: 0, cw: 0, sc: 0, hm: 0 };
+  try {
+    var raw = window.localStorage.getItem(SKEY);
+    if (raw) { var o = JSON.parse(raw); KEYS.forEach(function(k){ if (typeof o[k] === 'number' && isFinite(o[k])) score[k] = Math.trunc(o[k]); }); }
+  } catch (err) {}
+  var UKEY = 'khtn6B1114Used', SSKEY = 'khtn6B1114State', used = { ws: {}, cw: {}, sc: {}, hm: {} };
+  var OUT_ALL = 'Em đã dùng hết các câu hỏi mới của trò chơi này. Hãy nhờ thầy cô đặt lại các câu hỏi đã dùng.';
+  var OUT_LVL = 'Hết từ mới ở mức này. Em hãy thử mức khác, hoặc nhờ thầy cô đặt lại các câu hỏi đã dùng.';
+  try {
+    var rawU = window.localStorage.getItem(UKEY);
+    if (rawU) { var ou = JSON.parse(rawU); KEYS.forEach(function(k){ if (Array.isArray(ou[k])) ou[k].forEach(function(x){ if (typeof x === 'string') used[k][x] = 1; }); }); }
+  } catch (err) {}
+  function hk(str){ var h = 2166136261; for (var i = 0; i < str.length; i++) { h = Math.imul((h ^ str.charCodeAt(i)) >>> 0, 16777619) >>> 0; } return h.toString(36); }
+  function readStore(key){ try { var r = window.localStorage.getItem(key); return r ? JSON.parse(r) : null; } catch (err) { return null; } }
+  function syncScore(){ var o = readStore(SKEY); if (o) KEYS.forEach(function(k){ if (typeof o[k] === 'number' && isFinite(o[k])) score[k] = Math.trunc(o[k]); }); }
+  function syncUsed(){ var o = readStore(UKEY); if (o) KEYS.forEach(function(k){ if (Array.isArray(o[k])) o[k].forEach(function(x){ if (typeof x === 'string') used[k][x] = 1; }); }); }
+  function saveUsed(force){ if (force !== true) syncUsed(); try { var o = {}; KEYS.forEach(function(k){ o[k] = Object.keys(used[k]); }); window.localStorage.setItem(UKEY, JSON.stringify(o)); } catch (err) {} }
+  // Word search and crossword remember the clue. Scramble and hangman remember the word.
+  function ckey(g, clue, word){ return (g === 'ws' || g === 'cw') ? hk(clue) : word; }
+  function isUsed(g, t){ return !!used[g][ckey(g, t.c, t.w)]; }
+  function burn(g, clue, word){ var k = ckey(g, clue, word); if (!used[g][k]) { used[g][k] = 1; saveUsed(); drawLeft(); } }
+  function countFor(g, fresh){
+    var seen = {}, n = 0, lv = g === 'sc' ? $('#sc-level').value : null;
+    POOL.forEach(function(t){
+      if (g === 'sc' && !SC_LEN[lv](t.w)) return;
+      if ((g === 'ws' || g === 'cw') && t.w.length > 14) return;
+      if (fresh && isUsed(g, t)) return;
+      if (g === 'ws' || g === 'cw') n++; else if (!seen[t.w]) { seen[t.w] = 1; n++; }
+    });
+    return n;
+  }
+  function drawLeft(){
+    var lab = { ws: 'Câu hỏi mới còn lại: ', cw: 'Câu hỏi mới còn lại: ', sc: 'Từ mới còn lại ở mức này: ', hm: 'Từ mới còn lại: ' };
+    KEYS.forEach(function(g){
+      var el = $('#left-' + g); if (!el) return;
+      var left = countFor(g, true), all = countFor(g, false);
+      el.textContent = lab[g] + left + ' trên ' + all + '.';
+    });
+  }
+  function total(){ return score.ws + score.cw + score.sc + score.hm; }
+  function saveScore(){ try { window.localStorage.setItem(SKEY, JSON.stringify(score)); } catch (err) {} }
+  function drawScore(msg, kind){
+    var fmt = function(n){ return n < 0 ? '\u2212' + (-n) : String(n); };
+    $('#sb-total').textContent = fmt(total()); $('#final-num').textContent = fmt(total());
+    $('#sb-total').classList.toggle('neg', total() < 0); $('#final-num').parentNode.classList.toggle('neg', total() < 0);
+    KEYS.forEach(function(k){
+      var a = $('#sb-' + k), f = $('#f-' + k);
+      a.textContent = fmt(score[k]); f.textContent = fmt(score[k]);
+      a.classList.toggle('neg', score[k] < 0); f.classList.toggle('neg', score[k] < 0);
+    });
+    if (msg !== undefined) { var el = $('#sb-last'); el.textContent = msg; el.className = 'sb-last' + (kind ? ' ' + kind : ''); }
+    if (kind) { var n = $('#sb-total'); n.classList.remove('bump'); void n.offsetWidth; n.classList.add('bump'); }
+  }
+  function add(k, n, why){ if (n <= 0) return; if (isTeacher()) { note('Chế độ giáo viên: không tính điểm.'); return; } syncScore(); score[k] += n; saveScore(); drawScore('+' + n + ' điểm: ' + why, 'up'); }
+  function spend(k, n, why){ if (isTeacher()) return; syncScore(); score[k] -= n; saveScore(); drawScore('\u2212' + n + ' điểm: ' + why, 'down'); }
+  function note(msg){ drawScore(msg, ''); }
+
+  // BEGIN-POOL
+  var shuffle = function(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  var UNITS = Object.keys(TERMS);
+  var POOL = [];
+  // Answers are stored as plain A to Z: marks removed, d-bar becomes D, spaces dropped.
+  function fold(s){ return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd').replace(/\u0110/g, 'D'); }
+  function keyOf(s){ return fold(s).toUpperCase().replace(/[^A-Z]/g, ''); }
+  var DISP = {};
+  function revTxt(w){ var d = DISP[w]; return (d && d.toUpperCase() !== w) ? w + ' (' + d + ')' : w; }
+  UNITS.forEach(function(u){ TERMS[u].forEach(function(x){
+    var w = keyOf(x[0]); if (!DISP[w]) DISP[w] = x[0];
+    var c = x[1] + (/\s/.test(x[0]) ? ' (viết liền, không dấu)' : '');
+    POOL.push({ w: w, c: x[2] ? 'Câu khó: ' + c : c, u: u, t: !!x[2] });
+  }); });
+  function clash(w, arr){
+    return arr.some(function(p){ return p.w === w || p.w.indexOf(w) > -1 || w.indexOf(p.w) > -1; });
+  }
+  // A mixed sample: rotate through the units so every puzzle blends them.
+  function sample(n, keep, game){
+    var lists = UNITS.map(function(u){ return shuffle(POOL.filter(function(t){ return t.u === u && (!keep || keep(t.w)) && (!game || !isUsed(game, t)); })); });
+    var picked = [], i = Math.floor(Math.random() * UNITS.length), guard = 0;
+    while (picked.length < n && guard++ < 1000) {
+      var l = lists[i % UNITS.length]; i++;
+      while (l.length) { var t = l.shift(); if (t.t && Math.random() < 0.3) continue; if (!clash(t.w, picked)) { picked.push(t); break; } }
+    }
+    return shuffle(picked);
+  }
+  // END-POOL
+
+  /* ---------- tabs ---------- */
+  var tabs = $$('.tab');
+  var currentTab = 'ws';
+  function showTab(id){
+    currentTab = id;
+    tabs.forEach(function(t){
+      var on = t.id === 'tab-' + id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      $('#p-' + t.id.slice(4)).hidden = !on;
+    });
+    if (id === 'cw' && !cw) cwInit();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ showTab(t.id.slice(4)); });
+    t.addEventListener('keydown', function(e){
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      n.focus(); showTab(n.id.slice(4));
+    });
+  });
+
+  /* ---------- word search ---------- */
+  // BEGIN-WS
+  var DIRS = {
+    easy: [[0,1],[1,0]],
+    med:  [[0,1],[1,0],[1,1],[-1,1]],
+    hard: [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]]
+  };
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function buildSearch(words, size, dirs){
+    for (var attempt = 0; attempt < 80; attempt++) {
+      var g = [];
+      for (var r = 0; r < size; r++) { var row = []; for (var c = 0; c < size; c++) row.push(''); g.push(row); }
+      var order = words.slice().sort(function(a, b){ return b.length - a.length; });
+      var placed = [], ok = true;
+      for (var wi = 0; wi < order.length && ok; wi++) {
+        var w = order[wi], done = false;
+        for (var t = 0; t < 400 && !done; t++) {
+          var d = dirs[Math.floor(Math.random() * dirs.length)];
+          var r0 = Math.floor(Math.random() * size), c0 = Math.floor(Math.random() * size);
+          var r1 = r0 + d[0] * (w.length - 1), c1 = c0 + d[1] * (w.length - 1);
+          if (r1 < 0 || r1 >= size || c1 < 0 || c1 >= size) continue;
+          var fit = true;
+          for (var i = 0; i < w.length; i++) {
+            var ch = g[r0 + d[0] * i][c0 + d[1] * i];
+            if (ch && ch !== w[i]) { fit = false; break; }
+          }
+          if (!fit) continue;
+          for (var j = 0; j < w.length; j++) g[r0 + d[0] * j][c0 + d[1] * j] = w[j];
+          placed.push({ w: w, r: r0, c: c0, d: d });
+          done = true;
+        }
+        if (!done) ok = false;
+      }
+      if (ok) {
+        for (var rr = 0; rr < size; rr++) for (var cc = 0; cc < size; cc++) {
+          if (!g[rr][cc]) g[rr][cc] = LETTERS.charAt(Math.floor(Math.random() * 26));
+        }
+        return { g: g, placed: placed };
+      }
+    }
+    return null;
+  }
+  // END-WS
+
+  // BEGIN-CW
+  function cwTry(entries){
+    var MAXDIM = 15, grid = {}, used = {}, cells = [], placed = [], bb = null;
+    function nbb(w, r, c, d){
+      var r2 = r + (d === 'D' ? w.length - 1 : 0), c2 = c + (d === 'A' ? w.length - 1 : 0);
+      if (!bb) return [r, r2, c, c2];
+      return [Math.min(bb[0], r), Math.max(bb[1], r2), Math.min(bb[2], c), Math.max(bb[3], c2)];
+    }
+    function can(w, r, c, d){
+      var dr = d === 'D' ? 1 : 0, dc = d === 'A' ? 1 : 0, b = nbb(w, r, c, d);
+      if (b[1] - b[0] + 1 > MAXDIM || b[3] - b[2] + 1 > MAXDIM) return 0;
+      if (grid[(r - dr) + ',' + (c - dc)]) return 0;
+      if (grid[(r + dr * w.length) + ',' + (c + dc * w.length)]) return 0;
+      var inter = 0;
+      for (var i = 0; i < w.length; i++) {
+        var rr = r + dr * i, cc = c + dc * i, k = rr + ',' + cc;
+        if (grid[k]) {
+          if (grid[k] !== w.charAt(i)) return 0;
+          if (used[k][d]) return 0;
+          inter++;
+        } else if (grid[(rr + dc) + ',' + (cc + dr)] || grid[(rr - dc) + ',' + (cc - dr)]) {
+          return 0;
+        }
+      }
+      if (placed.length && inter === 0) return 0;
+      return inter;
+    }
+    function put(w, r, c, d){
+      bb = nbb(w, r, c, d);
+      var dr = d === 'D' ? 1 : 0, dc = d === 'A' ? 1 : 0;
+      for (var i = 0; i < w.length; i++) {
+        var rr = r + dr * i, cc = c + dc * i, k = rr + ',' + cc;
+        if (!grid[k]) { grid[k] = w.charAt(i); used[k] = {}; cells.push([rr, cc, w.charAt(i)]); }
+        used[k][d] = true;
+      }
+      placed.push({ w: w, r: r, c: c, d: d });
+    }
+    var order = entries.map(function(e){ return { e: e, k: -e.w.length + Math.random() * 3 }; })
+      .sort(function(a, b){ return a.k - b.k; }).map(function(x){ return x.e; });
+    put(order[0].w, 0, 0, 'A');
+    var pending = order.slice(1);
+    for (var pass = 0; pass < 3; pass++) {
+      var rest = [];
+      pending.forEach(function(e){
+        var w = e.w, cands = [];
+        cells.slice().forEach(function(cell){
+          for (var i = 0; i < w.length; i++) {
+            if (w.charAt(i) !== cell[2]) continue;
+            ['A', 'D'].forEach(function(d){
+              var r = cell[0] - (d === 'D' ? i : 0), c = cell[1] - (d === 'A' ? i : 0);
+              var inter = can(w, r, c, d);
+              if (inter) cands.push({ k: -inter + Math.random() * 1.5, r: r, c: c, d: d });
+            });
+          }
+        });
+        if (cands.length) {
+          cands.sort(function(a, b){ return a.k - b.k; });
+          put(w, cands[0].r, cands[0].c, cands[0].d);
+        } else rest.push(e);
+      });
+      pending = rest;
+    }
+    var area = (bb[1] - bb[0] + 1) * (bb[3] - bb[2] + 1), inters = 0;
+    Object.keys(used).forEach(function(k){ if (used[k].A && used[k].D) inters++; });
+    return { placed: placed, grid: grid, bb: bb, score: placed.length * 1000 + inters * 15 - area };
+  }
+  function cwValid(data, count){
+    var names = {};
+    data.across.concat(data.down).forEach(function(e){ names[e.ans] = 1; });
+    if (Object.keys(names).length !== count) return false;
+    var runs = [], r, c;
+    for (r = 0; r < data.rows; r++) data.grid[r].split('.').forEach(function(p){ if (p.length > 1) runs.push(p); });
+    for (c = 0; c < data.cols; c++) {
+      var col = '';
+      for (r = 0; r < data.rows; r++) col += data.grid[r].charAt(c);
+      col.split('.').forEach(function(p){ if (p.length > 1) runs.push(p); });
+    }
+    if (runs.length !== count) return false;
+    for (var i = 0; i < runs.length; i++) if (!names[runs[i]]) return false;
+    var ok = true;
+    data.across.forEach(function(e){ for (var k = 0; k < e.ans.length; k++) if (data.grid[e.r].charAt(e.c + k) !== e.ans.charAt(k)) ok = false; });
+    data.down.forEach(function(e){ for (var k = 0; k < e.ans.length; k++) if (data.grid[e.r + k].charAt(e.c) !== e.ans.charAt(k)) ok = false; });
+    return ok;
+  }
+  function cwFinalize(res, clueOf){
+    var bb = res.bb, rows = bb[1] - bb[0] + 1, cols = bb[3] - bb[2] + 1, L = [], r, c;
+    for (r = 0; r < rows; r++) { var row = []; for (c = 0; c < cols; c++) row.push('.'); L.push(row); }
+    Object.keys(res.grid).forEach(function(k){ var p = k.split(','); L[+p[0] - bb[0]][+p[1] - bb[2]] = res.grid[k]; });
+    var starts = {};
+    res.placed.forEach(function(p){ starts[(p.r - bb[0]) + ',' + (p.c - bb[2]) + ',' + p.d] = p.w; });
+    var n = 0, across = [], down = [];
+    for (r = 0; r < rows; r++) for (c = 0; c < cols; c++) {
+      var a = starts[r + ',' + c + ',A'], d = starts[r + ',' + c + ',D'];
+      if (a || d) {
+        n++;
+        if (a) across.push({ n: n, r: r, c: c, ans: a, clue: clueOf[a] });
+        if (d) down.push({ n: n, r: r, c: c, ans: d, clue: clueOf[d] });
+      }
+    }
+    var data = { rows: rows, cols: cols, grid: L.map(function(x){ return x.join(''); }), across: across, down: down };
+    return cwValid(data, res.placed.length) ? data : null;
+  }
+  function genCrossword(entries, budgetMs){
+    var clueOf = {}; entries.forEach(function(e){ clueOf[e.w] = e.c; });
+    var best = null, t0 = Date.now();
+    for (var it = 0; it < 8000; it++) {
+      var res = cwTry(entries);
+      if (!best || res.score > best.score) {
+        var d = cwFinalize(res, clueOf);
+        if (d) best = { score: res.score, data: d, count: res.placed.length };
+      }
+      var el = Date.now() - t0;
+      if (best && ((el > budgetMs && best.count >= Math.min(12, entries.length)) || el > 2500)) break;
+    }
+    return best ? best.data : null;
+  }
+  // END-CW
+
+  var SIZE = 14;
+  var ws = { terms: [], puzzle: null, found: {}, start: null, cur: null, cells: [], hintUsed: false, showAll: false };
+  var wsGrid = $('#ws-grid'), wsList = $('#ws-list'), wsStatus = $('#ws-status');
+
+  function burnWs(){ ws.terms.forEach(function(t){ burn('ws', t.c, t.w); }); }
+  function wsEmpty(){
+    ws.terms = []; ws.puzzle = null; ws.found = {}; ws.paths = {}; ws.start = null; ws.cur = null; ws.cells = [];
+    ws.level = $('#ws-level').value; ws.revealed = {}; ws.listMode = false; ws.listPaid = false; ws.assisted = true; ws.bonusDone = true;
+    wsGrid.innerHTML = ''; wsList.innerHTML = '';
+    wsStatus.textContent = OUT_ALL; wsStatus.className = 'status';
+    updateListBtn(); drawLeft();
+  }
+  function wsInit(){
+    syncUsed();
+    var level = $('#ws-level').value, p = null;
+    for (var k = 0; k < 20 && !p; k++) {
+      ws.terms = sample(14, function(w){ return w.length <= 14; }, 'ws');
+      if (ws.terms.length < 4) { wsEmpty(); return; }
+      p = buildSearch(ws.terms.map(function(t){ return t.w; }), SIZE, DIRS[level]);
+    }
+    ws.puzzle = p; ws.found = {}; ws.paths = {}; ws.start = null; ws.cur = null; ws.hintUsed = false; ws.showAll = false;
+    ws.level = level; ws.revealed = {}; ws.listMode = false; ws.listPaid = false; ws.assisted = false; ws.bonusDone = false;
+    wsDrawGrid();
+  }
+  function wsDrawGrid(){
+    var p = ws.puzzle;
+    $('#ws-show').textContent = 'Hiện tất cả các từ'; updateListBtn();
+    hintBtn($('#ws-hint'), false);
+    wsGrid.innerHTML = ''; ws.cells = [];
+    for (var r = 0; r < SIZE; r++) { ws.cells.push([]); for (var c = 0; c < SIZE; c++) {
+      var el = document.createElement('div');
+      el.className = 'ws-cell'; el.setAttribute('data-r', r); el.setAttribute('data-c', c);
+      el.textContent = p.g[r][c];
+      wsGrid.appendChild(el); ws.cells[r].push(el);
+    } }
+    wsRenderList(); wsStatus.textContent = ''; wsStatus.className = 'status';
+    drawLeft();
+  }
+
+  function updateListBtn(){
+    $('#ws-list-btn').textContent = ws.listMode ? 'Quay lại gợi ý' : (ws.listPaid ? 'Hiện danh sách từ' : 'Hiện danh sách từ (\u2212' + WS_LIST + ')');
+  }
+  function wsRenderList(){
+    wsList.className = 'ws-list' + (ws.listMode ? '' : ' clues');
+    wsList.innerHTML = '';
+    ws.terms.forEach(function(t){
+      var li = document.createElement('li'), done = !!ws.found[t.w];
+      if (done) li.className = 'done';
+      if (ws.listMode) li.innerHTML = '<span class="w">' + t.w + '</span>';
+      else if (done) li.innerHTML = '<span class="rev">' + revTxt(t.w) + '</span> <span class="w">' + t.c + '</span>';
+      else if (ws.revealed[t.w]) li.innerHTML = '<span class="rev">' + revTxt(t.w) + '</span><span>' + t.c + '</span>';
+      else li.innerHTML = '<span>' + t.c + '</span><button class="rv" type="button" data-w="' + t.w + '">Xem từ (\u2212' + WS_REVEAL + ')</button>';
+      wsList.appendChild(li);
+    });
+    var n = Object.keys(ws.found).length, total = ws.terms.length;
+    if (n === total) { wsStatus.textContent = 'Đã tìm đủ ' + total + ' từ. Làm tốt lắm!'; wsStatus.className = 'status good'; }
+    else if (n > 0) { wsStatus.textContent = 'Đã tìm được ' + n + ' trên ' + total + ' từ.'; wsStatus.className = 'status'; }
+  }
+  wsList.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('button.rv') : null;
+    if (!b) return;
+    var w = b.getAttribute('data-w');
+    if (ws.found[w] || ws.revealed[w]) return;
+    ws.revealed[w] = 1; spend('ws', WS_REVEAL, 'xem một từ');
+    burnWs();
+    wsRenderList();
+  });
+  $('#ws-list-btn').addEventListener('click', function(){
+    if (!ws.puzzle) return;
+    if (!ws.listMode && !ws.listPaid) { ws.listPaid = true; burnWs(); spend('ws', WS_LIST, 'hiện danh sách từ'); }
+    ws.listMode = !ws.listMode; updateListBtn(); wsRenderList();
+  });
+
+  function wsCellFromPoint(x, y){
+    var el = document.elementFromPoint(x, y);
+    if (!el) return null;
+    el = el.closest ? el.closest('.ws-cell') : null;
+    return el ? { r: +el.getAttribute('data-r'), c: +el.getAttribute('data-c') } : null;
+  }
+  function wsPath(){
+    if (!ws.start) return [];
+    var dr = ws.cur.r - ws.start.r, dc = ws.cur.c - ws.start.c;
+    if (!(dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc))) return [ws.start];
+    var len = Math.max(Math.abs(dr), Math.abs(dc)) + 1;
+    var sr = Math.sign(dr), sc = Math.sign(dc), out = [];
+    for (var i = 0; i < len; i++) out.push({ r: ws.start.r + sr * i, c: ws.start.c + sc * i });
+    return out;
+  }
+  function wsDraw(){
+    $$('.ws-cell.sel', wsGrid).forEach(function(e){ e.classList.remove('sel'); });
+    wsPath().forEach(function(p){ ws.cells[p.r][p.c].classList.add('sel'); });
+  }
+  wsGrid.addEventListener('pointerdown', function(e){
+    var c = wsCellFromPoint(e.clientX, e.clientY); if (!c) return;
+    ws.start = c; ws.cur = c; wsDraw();
+    try { wsGrid.setPointerCapture(e.pointerId); } catch(err){}
+    e.preventDefault();
+  });
+  wsGrid.addEventListener('pointermove', function(e){
+    if (!ws.start) return;
+    var c = wsCellFromPoint(e.clientX, e.clientY);
+    if (c) { ws.cur = c; wsDraw(); }
+  });
+  wsGrid.addEventListener('pointerup', function(){
+    if (!ws.start || !ws.puzzle) return;
+    var path = wsPath();
+    if (path.length > 1) {
+      var s = path.map(function(p){ return ws.puzzle.g[p.r][p.c]; }).join('');
+      var rev = s.split('').reverse().join(''), hit = null;
+      ws.terms.forEach(function(t){ if (!ws.found[t.w] && (t.w === s || t.w === rev)) hit = t.w; });
+      if (hit) {
+        ws.found[hit] = 1; ws.paths[hit] = path.map(function(p){ return [p.r, p.c]; });
+        path.forEach(function(p){ ws.cells[p.r][p.c].classList.add('found'); });
+        var tt = ws.terms.filter(function(x){ return x.w === hit; })[0], bn = tt.t ? TRICKY : 0;
+        burnWs();
+        if (!ws.assisted && !ws.revealed[hit]) add('ws', WS_PTS[ws.level] + bn, 'tìm được ' + hit + (bn ? ' (câu khó +' + bn + ')' : ''));
+        if (!ws.assisted && !ws.bonusDone && Object.keys(ws.found).length === ws.terms.length && !Object.keys(ws.revealed).length) {
+          ws.bonusDone = true; add('ws', Math.round(WS_BONUS[ws.level] * ws.terms.length / 14), 'tìm đủ mọi từ');
+        }
+        wsRenderList();
+      }
+    }
+    ws.start = null; ws.cur = null; wsDraw();
+  });
+  wsGrid.addEventListener('pointercancel', function(){ ws.start = null; ws.cur = null; wsDraw(); });
+
+  $('#ws-new').addEventListener('click', wsInit);
+  $('#ws-level').addEventListener('change', wsInit);
+    $('#ws-hint').addEventListener('click', function(){
+    if (ws.hintUsed || !ws.puzzle) return;
+    var left = ws.puzzle.placed.filter(function(p){ return !ws.found[p.w]; });
+    if (!left.length) return;
+    ws.hintUsed = true; burnWs(); hintBtn($('#ws-hint'), true); spend('ws', WS_HINT, 'gợi ý tìm từ');
+    var p = left[Math.floor(Math.random() * left.length)], el = ws.cells[p.r][p.c];
+    el.classList.add('hint');
+    setTimeout(function(){ el.classList.remove('hint'); }, 3000);
+  });
+  $('#ws-show').addEventListener('click', function(){
+    if (!ws.puzzle) return;
+    ws.showAll = !ws.showAll;
+    if (ws.showAll) burnWs();
+    if (ws.showAll && !ws.assisted) { ws.assisted = true; note('Đã dùng chế độ giáo viên: lưới này không tính thêm điểm.'); }
+    ws.puzzle.placed.forEach(function(p){
+      for (var i = 0; i < p.w.length; i++) ws.cells[p.r + p.d[0] * i][p.c + p.d[1] * i].classList.toggle('teach', ws.showAll);
+    });
+    $('#ws-show').textContent = ws.showAll ? 'Ẩn tất cả các từ' : 'Hiện tất cả các từ';
+  });
+
+  /* ---------- crossword ---------- */
+  var cw = null;
+  function cwEmpty(){
+    cw = null;
+    $('#cw-grid').innerHTML = ''; $('#cw-across').innerHTML = ''; $('#cw-down').innerHTML = ''; $('#cw-banner').textContent = '';
+    var st = $('#cw-status'); st.textContent = OUT_ALL; st.className = 'status';
+    drawLeft();
+  }
+  function cwInit(){
+    syncUsed();
+    var size = $('#cw-size').value;
+    var picked = sample(CW_N[size], null, 'cw'), tmap = {};
+    if (picked.length < 6) { cwEmpty(); return; }
+    picked.forEach(function(t){ tmap[t.w] = t.t; });
+    var data = genCrossword(picked.map(function(t){ return { w: t.w, c: t.c }; }), 700);
+    if (!data) { $('#cw-status').textContent = 'Không tạo được ô chữ. Hãy bấm Ô chữ mới.'; return; }
+    cwBuild(data, size, tmap);
+  }
+  function cwBuild(data, size, tmap){
+    cw = { data: data, entries: [], at: {}, inputs: {}, els: {}, cur: null, hintUsed: false, size: size, tricky: tmap, awarded: {}, free: {}, bonusDone: false };
+    hintBtn($('#cw-hint'), false);
+    data.across.forEach(function(e){ cw.entries.push({ n: e.n, dir: 'A', r: e.r, c: e.c, ans: e.ans, clue: e.clue }); });
+    data.down.forEach(function(e){ cw.entries.push({ n: e.n, dir: 'D', r: e.r, c: e.c, ans: e.ans, clue: e.clue }); });
+    var grid = $('#cw-grid'); grid.innerHTML = ''; grid.style.setProperty('--cols', data.cols);
+    var nums = {};
+    cw.entries.forEach(function(e){
+      nums[e.r + ',' + e.c] = e.n;
+      for (var i = 0; i < e.ans.length; i++) {
+        var r = e.r + (e.dir === 'D' ? i : 0), c = e.c + (e.dir === 'A' ? i : 0);
+        var k = r + ',' + c; cw.at[k] = cw.at[k] || {}; cw.at[k][e.dir] = e;
+      }
+    });
+    for (var r = 0; r < data.rows; r++) for (var c = 0; c < data.cols; c++) {
+      var k = r + ',' + c, cell = document.createElement('div');
+      if (data.grid[r].charAt(c) === '.') { cell.className = 'cw-cell blk'; grid.appendChild(cell); continue; }
+      cell.className = 'cw-cell';
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.maxLength = 1; inp.autocomplete = 'off'; inp.autocapitalize = 'characters'; inp.spellcheck = false;
+      inp.setAttribute('aria-label', 'Hàng ' + (r + 1) + ' cột ' + (c + 1));
+      if (nums[k]) { var sp = document.createElement('span'); sp.className = 'n'; sp.textContent = nums[k]; cell.appendChild(sp); }
+      cell.appendChild(inp); grid.appendChild(cell);
+      cw.inputs[k] = inp; cw.els[k] = cell;
+      cwWire(inp, r, c);
+    }
+    cwClues();
+    var first = cw.entries.filter(function(e){ return e.dir === 'A'; })[0] || cw.entries[0];
+    cwSet(first.r, first.c, first.dir, false);
+    $('#cw-status').textContent = ''; $('#cw-status').className = 'status';
+    drawLeft();
+  }
+
+  function cwCells(e){
+    var out = [];
+    for (var i = 0; i < e.ans.length; i++) out.push((e.r + (e.dir === 'D' ? i : 0)) + ',' + (e.c + (e.dir === 'A' ? i : 0)));
+    return out;
+  }
+  function cwSet(r, c, dir, focus){
+    var k = r + ',' + c, slot = cw.at[k]; if (!slot) return;
+    if (!slot[dir]) dir = dir === 'A' ? 'D' : 'A';
+    cw.cur = { r: r, c: c, dir: dir, e: slot[dir] };
+    Object.keys(cw.els).forEach(function(x){ cw.els[x].classList.remove('inword', 'cur'); });
+    cwCells(slot[dir]).forEach(function(x){ cw.els[x].classList.add('inword'); });
+    cw.els[k].classList.add('cur');
+    $$('.cw-clues button').forEach(function(b){ b.classList.toggle('cur', b.getAttribute('data-n') === slot[dir].n + dir); });
+    $('#cw-banner').innerHTML = '<b>' + slot[dir].n + (dir === 'A' ? ' Ngang' : ' Dọc') + '</b>' + slot[dir].clue + ' (' + slot[dir].ans.length + ')';
+    if (focus !== false) cw.inputs[k].focus();
+  }
+  function cwStep(delta){
+    var cells = cwCells(cw.cur.e), i = cells.indexOf(cw.cur.r + ',' + cw.cur.c), n = i + delta;
+    if (n < 0 || n >= cells.length) return;
+    var p = cells[n].split(',');
+    cwSet(+p[0], +p[1], cw.cur.dir, true);
+  }
+  function cwMove(dr, dc){
+    var r = cw.cur.r + dr, c = cw.cur.c + dc;
+    while (r >= 0 && r < cw.data.rows && c >= 0 && c < cw.data.cols) {
+      if (cw.inputs[r + ',' + c]) { cwSet(r, c, cw.cur.dir, true); return; }
+      r += dr; c += dc;
+    }
+  }
+  function cwWire(inp, r, c){
+    var k = r + ',' + c;
+    inp.addEventListener('click', function(){
+      if (cw.cur && cw.cur.r === r && cw.cur.c === c) cwSet(r, c, cw.cur.dir === 'A' ? 'D' : 'A', false);
+      else cwSet(r, c, cw.cur ? cw.cur.dir : 'A', false);
+      inp.select();
+    });
+    inp.addEventListener('focus', function(){
+      if (!cw.cur || cw.cur.r !== r || cw.cur.c !== c) cwSet(r, c, cw.cur ? cw.cur.dir : 'A', false);
+    });
+    inp.addEventListener('input', function(){
+      var v = keyOf(inp.value).slice(-1);
+      inp.value = v; cw.els[k].classList.remove('wrong');
+      if (v) burnCw();
+      cwRefresh();
+      if (v) cwStep(1);
+    });
+    inp.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight') { e.preventDefault(); cwMove(0, 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); cwMove(0, -1); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); cwMove(1, 0); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); cwMove(-1, 0); }
+      else if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (inp.value) { inp.value = ''; cw.els[k].classList.remove('wrong'); cwRefresh(); }
+        else cwStep(-1);
+      }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cwSet(r, c, cw.cur.dir === 'A' ? 'D' : 'A', true); }
+    });
+  }
+  function cwClues(){
+    ['A', 'D'].forEach(function(d){
+      var ol = $(d === 'A' ? '#cw-across' : '#cw-down'); ol.innerHTML = '';
+      cw.entries.filter(function(e){ return e.dir === d; }).forEach(function(e){
+        var li = document.createElement('li'), b = document.createElement('button');
+        b.type = 'button'; b.setAttribute('data-n', e.n + d);
+        b.innerHTML = '<span class="num">' + e.n + '</span>' + e.clue + ' (' + e.ans.length + ')';
+        b.addEventListener('click', function(){ cwSet(e.r, e.c, d, true); });
+        li.appendChild(b); ol.appendChild(li);
+      });
+    });
+  }
+  function cwSolution(k){ var p = k.split(','); return cw.data.grid[+p[0]].charAt(+p[1]); }
+  function cwRefresh(){
+    var all = true;
+    Object.keys(cw.inputs).forEach(function(k){ if (cw.inputs[k].value !== cwSolution(k)) all = false; });
+    cw.entries.forEach(function(e){
+      var ok = cwCells(e).every(function(k){ return cw.inputs[k].value === cwSolution(k); });
+      var b = $('.cw-clues button[data-n="' + e.n + e.dir + '"]'); if (b) b.classList.toggle('done', ok);
+      var id = e.n + e.dir;
+      if (ok || cwCells(e).some(function(k){ return cw.free[k]; })) burn('cw', e.clue, e.ans);
+      if (ok && !cw.awarded[id] && !cwCells(e).some(function(k){ return cw.free[k]; })) {
+        cw.awarded[id] = 1;
+        var bn = cw.tricky[e.ans] ? TRICKY : 0;
+        add('cw', CW_PPW[cw.size] + bn, 'từ ô chữ ' + e.ans + (bn ? ' (câu khó +' + bn + ')' : ''));
+      }
+    });
+    var st = $('#cw-status');
+    if (all) {
+      if (!cw.bonusDone && !Object.keys(cw.free).length) { cw.bonusDone = true; add('cw', Math.round(0.15 * CW_PPW[cw.size] * cw.entries.length), 'hoàn thành ô chữ'); }
+      st.textContent = 'Đã hoàn thành ô chữ. Mọi ô đều đúng.'; st.className = 'status good';
+    }
+    else { st.textContent = ''; st.className = 'status'; }
+  }
+  function burnCw(){ if (cw) cw.entries.forEach(function(e){ burn('cw', e.clue, e.ans); }); }
+  function cwFill(k, free){ cw.inputs[k].value = cwSolution(k); cw.els[k].classList.remove('wrong'); if (free) cw.free[k] = 1; }
+  $('#cw-check').addEventListener('click', function(){
+    if (!cw) return;
+    burnCw();
+    var bad = 0;
+    Object.keys(cw.inputs).forEach(function(k){
+      var v = cw.inputs[k].value, wrong = v && v !== cwSolution(k);
+      cw.els[k].classList.toggle('wrong', !!wrong); if (wrong) bad++;
+    });
+    var st = $('#cw-status');
+    if (bad) { st.textContent = bad + ' ô sai, được tô màu đỏ. Lần kiểm tra này tốn ' + CW_CHECK + ' điểm.'; st.className = 'status'; spend('cw', CW_CHECK, 'kiểm tra thấy chữ sai'); }
+    else if (st.className.indexOf('good') < 0) { st.textContent = 'Chưa thấy chữ nào sai.'; st.className = 'status'; }
+  });
+  $('#cw-hint').addEventListener('click', function(){
+    if (!cw || cw.hintUsed) return;
+    var k = cw.cur.r + ',' + cw.cur.c, st = $('#cw-status');
+    if (cw.inputs[k].value === cwSolution(k)) { st.textContent = 'Ô này đã đúng rồi. Hãy chọn ô khác để dùng gợi ý.'; st.className = 'status'; return; }
+    burnCw(); cwFill(k); cw.hintUsed = true; hintBtn($('#cw-hint'), true); spend('cw', CW_HINT, 'gợi ý ô chữ'); cwRefresh();
+  });
+  $('#cw-rl').addEventListener('click', function(){ if (cw) { burnCw(); cwFill(cw.cur.r + ',' + cw.cur.c, true); cwRefresh(); } });
+  $('#cw-rw').addEventListener('click', function(){ if (cw) { burnCw(); cwCells(cw.cur.e).forEach(function(k){ cwFill(k, true); }); cwRefresh(); } });
+  $('#cw-ra').addEventListener('click', function(){ if (cw) { burnCw(); Object.keys(cw.inputs).forEach(function(k){ cwFill(k, true); }); cwRefresh(); } });
+  $('#cw-clear').addEventListener('click', function(){
+    if (!cw) return;
+    Object.keys(cw.inputs).forEach(function(k){ cw.inputs[k].value = ''; cw.els[k].classList.remove('wrong'); });
+    cwRefresh();
+  });
+  $('#cw-new').addEventListener('click', cwInit);
+
+  /* ---------- scramble ---------- */
+  var sc = null;
+  function scramble(w){
+    if (w.length < 2) return w;
+    var s; do { s = shuffle(w.split('')).join(''); } while (s === w);
+    return s;
+  }
+  function scInit(){
+    syncUsed();
+    var lv = $('#sc-level').value;
+    var q = sample(8, SC_LEN[lv], 'sc');
+    sc = { queue: q, total: q.length, solved: 0, hintUsed: false, level: lv, wrongs: {}, assist: {}, pts: 0 };
+    hintBtn($('#sc-hint'), false);
+    if (!q.length) {
+      $('#sc-card').hidden = true;
+      var sst = $('#sc-status'); sst.textContent = OUT_LVL; sst.className = 'status';
+      drawLeft(); return;
+    }
+    $('#sc-card').hidden = false;
+    scShow(); drawLeft();
+  }
+  function scShow(){
+    var st = $('#sc-status');
+    if (!sc.queue.length) {
+      $('#sc-card').hidden = true;
+      st.textContent = 'Đã giải hết ' + sc.total + ' từ' + (sc.hintUsed ? ' và có dùng gợi ý.' : ' mà không dùng gợi ý.') + ' Điểm của bộ này: ' + sc.pts + '.';
+      st.className = 'status good'; return;
+    }
+    var cur = sc.queue[0];
+    $('#sc-count').textContent = 'Từ ' + (sc.solved + 1) + ' trên ' + sc.total;
+    $('#sc-letters').innerHTML = scramble(cur.w).split('').map(function(ch){ return '<span>' + ch + '</span>'; }).join('');
+    $('#sc-clue').textContent = cur.c;
+    $('#sc-in').value = ''; $('#sc-hinttext').textContent = '';
+    st.textContent = ''; st.className = 'status';
+  }
+  function scCheck(){
+    var guess = keyOf($('#sc-in').value), st = $('#sc-status');
+    if (!guess) return;
+    burn('sc', '', sc.queue[0].w);
+    if (guess === sc.queue[0].w) {
+      var cw0 = sc.queue[0].w, got = 0;
+      burn('sc', '', cw0);
+      if (!sc.assist[cw0]) { got = Math.max(1, SC_BASE[sc.level] - (sc.wrongs[cw0] || 0)) + (sc.queue[0].t ? TRICKY : 0); sc.pts += got; add('sc', got, 'xếp đúng một từ'); }
+      sc.queue.shift(); sc.solved++; scShow();
+      if (sc.queue.length) { st.textContent = (got ? 'Chính xác: ' + revTxt(cw0) + '. +' + got + ' điểm.' : 'Chính xác: ' + revTxt(cw0) + '. Không có điểm vì đã xem đáp án.'); st.className = 'status good'; }
+    } else {
+      var inp = $('#sc-in'); inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+      var cw1 = sc.queue[0].w; sc.wrongs[cw1] = (sc.wrongs[cw1] || 0) + 1;
+      st.textContent = 'Chưa đúng. Em thử lại nhé. Mỗi lần sai trừ 1 điểm của từ này.'; st.className = 'status';
+    }
+  }
+  $('#sc-check').addEventListener('click', scCheck);
+  $('#sc-in').addEventListener('keydown', function(e){ if (e.key === 'Enter') scCheck(); });
+  $('#sc-hint').addEventListener('click', function(){
+    if (sc.hintUsed || !sc.queue.length) return;
+    var w = sc.queue[0].w; burn('sc', '', w); sc.hintUsed = true; hintBtn($('#sc-hint'), true); spend('sc', SC_HINT, 'gợi ý xếp chữ');
+    $('#sc-hinttext').textContent = 'Từ này có ' + w.length + ' chữ cái và bắt đầu bằng chữ ' + w.charAt(0) + '.';
+  });
+  $('#sc-skip').addEventListener('click', function(){ if (!sc.queue.length) return; sc.queue.push(sc.queue.shift()); scShow(); });
+  $('#sc-ans').addEventListener('click', function(){ if (sc.queue.length) { sc.assist[sc.queue[0].w] = 1; burn('sc', '', sc.queue[0].w); $('#sc-hinttext').textContent = 'Đáp án: ' + revTxt(sc.queue[0].w); } });
+  $('#sc-again').addEventListener('click', scInit);
+
+  /* ---------- hangman ---------- */
+  var hm = null;
+  var hmKeys = $('#hm-keys'), hmWord = $('#hm-word'), hmStatus = $('#hm-status');
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(function(L){
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = L; b.setAttribute('data-l', L); b.setAttribute('aria-label', 'Letter ' + L);
+    b.addEventListener('click', function(){ hmGuess(L); });
+    hmKeys.appendChild(b);
+  });
+  function hmInit(){
+    syncUsed();
+    var lv = $('#hm-level').value;
+    var q = sample(6, null, 'hm');
+    hm = { queue: q, total: q.length, round: 0, wins: 0, hintUsed: false, word: '', clue: '', guessed: {}, wrong: 0, over: false, revealed: false, ended: false, level: lv, max: HM_MAX[lv], pts: 0, sawClue: true };
+    if (!q.length) { hm.over = true; hm.ended = true; hm.clue = OUT_ALL; hmStatus.textContent = OUT_ALL; hmStatus.className = 'status'; hmDraw(); drawLeft(); return; }
+    hmNext(); drawLeft();
+  }
+  function hmNext(){
+    var t = hm.queue.shift();
+    hm.sawClue = $('#hm-clue').checked; hm.tricky = !!t.t;
+    hm.round++; hm.word = t.w; hm.clue = t.c; hm.guessed = {}; hm.wrong = 0; hm.over = false; hm.revealed = false;
+    hmStatus.className = 'status'; hmStatus.textContent = '';
+    hmDraw();
+  }
+  function hmWon(){ return hm.word.split('').every(function(ch){ return hm.guessed[ch]; }); }
+  function hmDraw(){
+    var show = hm.revealed || (hm.over && isTeacher());
+    hmWord.innerHTML = hm.word.split('').map(function(ch){
+      if (hm.guessed[ch]) return '<span>' + ch + '</span>';
+      return show ? '<span class="miss">' + ch + '</span>' : '<span>&nbsp;</span>';
+    }).join('');
+    $$('button', hmKeys).forEach(function(b){
+      var L = b.getAttribute('data-l'), g = !!hm.guessed[L];
+      b.disabled = g || hm.over;
+      b.className = g ? (hm.word.indexOf(L) > -1 ? 'ok' : 'no') : '';
+    });
+    var level = Math.min(1, 0.1 + 0.9 * hm.wrong / hm.max), h = 162 * level, liq = $('#hm-liq');
+    liq.setAttribute('height', h); liq.setAttribute('y', 194 - h);
+    $('#hm-svg').classList.toggle('bk-lost', hm.over && !hmWon());
+    $('#hm-lives').textContent = 'Đoán sai: ' + hm.wrong + ' trên ' + hm.max;
+    $('#hm-count').textContent = 'Từ ' + hm.round + ' trên ' + hm.total;
+    $('#hm-clue-text').textContent = ($('#hm-clue').checked || hm.over) ? hm.clue : 'Đã ẩn gợi ý. Đánh dấu "Hiện gợi ý" nếu em muốn xem.';
+    hintBtn($('#hm-hint'), hm.hintUsed);
+    if (!hm.hintUsed && hm.over) $('#hm-hint').disabled = true;
+    var nb = $('#hm-next');
+    nb.textContent = hm.ended ? 'Ván mới' : 'Từ tiếp theo';
+    nb.disabled = !hm.over;
+  }
+  function hmGuess(L){
+    if (!hm || hm.over || hm.guessed[L]) return;
+    hm.guessed[L] = 1;
+    if (hm.word.indexOf(L) < 0) hm.wrong++;
+    hmAfter();
+  }
+  function hmAfter(){
+    if (hm && hm.word) burn('hm', '', hm.word);
+    var won = hmWon(), lost = !won && hm.wrong >= hm.max;
+    if (won || lost) {
+      hm.over = true; burn('hm', '', hm.word);
+      var got = 0;
+      if (won) {
+        hm.wins++;
+        if (!hm.revealed) {
+          got = HM_BASE[hm.level] + (hm.max - hm.wrong) + (hm.sawClue ? 0 : HM_NOCLUE) + (hm.tricky ? TRICKY : 0);
+          hm.pts += got; add('hm', got, 'đoán đúng một từ');
+        }
+      }
+      if (!hm.queue.length) hm.ended = true;
+      var msg = won ? 'Đúng rồi. Từ đó là ' + revTxt(hm.word) + '.' + (got ? ' +' + got + ' điểm.' : ' Không có điểm vì từ đã được hiện.')
+                    : 'Cốc đã tràn. Không có điểm cho từ này. Đáp án: ' + revTxt(hm.word) + '.';
+      if (hm.ended) msg += ' Hết ván: đã đoán đúng ' + hm.wins + ' trên ' + hm.total + ' từ, được ' + hm.pts + ' điểm.';
+      hmStatus.textContent = msg; hmStatus.className = 'status' + (won ? ' good' : '');
+    }
+    hmDraw();
+  }
+  $('#hm-hint').addEventListener('click', function(){
+    if (hm.over || hm.hintUsed) return;
+    var left = hm.word.split('').filter(function(ch){ return !hm.guessed[ch]; });
+    if (!left.length) return;
+    hm.hintUsed = true; spend('hm', HM_HINT, 'gợi ý đoán chữ');
+    hm.guessed[left[Math.floor(Math.random() * left.length)]] = 1;
+    hmAfter();
+  });
+  $('#hm-next').addEventListener('click', function(){ if (!hm.over) return; if (hm.ended) hmInit(); else hmNext(); });
+  $('#hm-clue').addEventListener('change', function(){ if ($('#hm-clue').checked && hm && !hm.over) hm.sawClue = true; hmDraw(); });
+  $('#hm-level').addEventListener('change', hmInit);
+  $('#hm-reveal').addEventListener('click', function(){ if (!hm.word) return; hm.revealed = true; burn('hm', '', hm.word); hmDraw(); });
+  document.addEventListener('keydown', function(e){
+    if ($('#p-hm').hidden || !hm) return;
+    var tag = e.target && e.target.tagName ? e.target.tagName : '';
+    if (/^(INPUT|SELECT|TEXTAREA)$/.test(tag) || e.ctrlKey || e.metaKey || e.altKey) return;
+    var kk = e.key && e.key.length === 1 ? keyOf(e.key) : '';
+    if (kk) hmGuess(kk);
+    else if (e.key === 'Enter' && hm.over && tag !== 'BUTTON') { if (hm.ended) hmInit(); else hmNext(); }
+  });
+
+  /* ---------- teacher gate ---------- */
+  var teacherWas = false;
+  function burnEverythingShown(){
+    burnWs(); burnCw();
+    if (sc) sc.queue.forEach(function(t){ burn('sc', '', t.w); });
+    if (hm) { if (hm.word) burn('hm', '', hm.word); hm.queue.forEach(function(t){ burn('hm', '', t.w); }); }
+  }
+  function setTeacher(on){
+    if (on) burnEverythingShown();
+    document.body.classList.toggle('teacher', on);
+    $('#tbanner').hidden = !on;
+    $('#t-form').hidden = true; $('#t-code').value = ''; $('#t-msg').textContent = '';
+    if (!on && teacherWas) { wsInit(); cwInit(); scInit(); hmInit(); note('Đã thoát chế độ giáo viên. Các ván mới đã bắt đầu.'); }
+    teacherWas = on;
+    if (hm) hmDraw();
+  }
+  function sha256hex(s){
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+    });
+  }
+  function tryTeacher(){
+    var msg = $('#t-msg'), code = $('#t-code').value.trim().toLowerCase();
+    if (!code) return;
+    if (!window.crypto || !window.crypto.subtle) { msg.textContent = 'Trình duyệt này không hỗ trợ mở khoá giáo viên.'; return; }
+    sha256hex('khtn6|' + code).then(function(h){
+      if (h === T_HASH) setTeacher(true);
+      else { msg.textContent = 'Mã chưa đúng.'; $('#t-code').value = ''; }
+    }, function(){ msg.textContent = 'Trình duyệt này không hỗ trợ mở khoá giáo viên.'; });
+  }
+  $('#t-open').addEventListener('click', function(){
+    var f = $('#t-form'); f.hidden = !f.hidden;
+    if (!f.hidden) $('#t-code').focus();
+  });
+  $('#t-go').addEventListener('click', tryTeacher);
+  $('#t-code').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryTeacher(); });
+  $('#t-lock').addEventListener('click', function(){ setTeacher(false); });
+
+  $('#cw-size').addEventListener('change', cwInit);
+  $('#sc-level').addEventListener('change', scInit);
+
+  /* ---------- final score ---------- */
+  var finalPanel = $('#final'), finalBtn = $('#sb-final'), resetBtn = $('#final-reset'), resetTimer = null;
+  function showFinal(on){
+    finalPanel.hidden = !on; finalBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    finalBtn.textContent = on ? 'Ẩn điểm tổng kết' : 'Điểm tổng kết';
+    if (on) { drawScore(); finalPanel.scrollIntoView({ block: 'nearest' }); }
+  }
+  finalBtn.addEventListener('click', function(){ showFinal(finalPanel.hidden); });
+  $('#final-close').addEventListener('click', function(){ showFinal(false); });
+
+  /* ---------- reset points: two confirmations ---------- */
+  var resetPanel = $('#reset'), resetTimer = null, unlockTimer = null, RESET_WAIT = 15000, UNLOCK_MS = 800;
+  var fmtPts = function(n){ return n < 0 ? '−' + (-n) : String(n); };
+  function resetClose(){
+    clearTimeout(resetTimer); clearTimeout(unlockTimer);
+    resetPanel.hidden = true; $('#sb-reset').setAttribute('aria-expanded', 'false');
+    $('#reset-pts').disabled = true; $('#reset-all').disabled = true;
+  }
+  function resetOpen(){
+    clearTimeout(resetTimer); clearTimeout(unlockTimer);
+    resetPanel.hidden = false; $('#sb-reset').setAttribute('aria-expanded', 'true');
+    $('#reset-step1').hidden = false; $('#reset-step2').hidden = true;
+    $('#reset-msg').textContent = 'Bước 1 trên 2. Đặt lại tất cả? Thao tác này xoá ' + fmtPts(total()) + ' điểm của em và các ván em đang chơi.';
+    $('#reset-note').textContent = '';
+    resetTimer = setTimeout(resetClose, RESET_WAIT);
+    resetPanel.scrollIntoView({ block: 'nearest' });
+    $('#reset-cancel1').focus();
+  }
+  function resetStep2(){
+    clearTimeout(resetTimer); clearTimeout(unlockTimer);
+    $('#reset-step1').hidden = true; $('#reset-step2').hidden = false;
+    $('#reset-msg').textContent = 'Bước 2 trên 2. Không thể hoàn tác. Hãy bấm nút đỏ để xoá điểm và bắt đầu các ván mới.';
+    $('#reset-note').textContent = 'Các câu hỏi em đã dùng vẫn được giữ lại, nên sẽ không quay lại.';
+    $('#reset-pts').disabled = true; $('#reset-all').disabled = true;
+    $('#reset-all').hidden = !isTeacher();
+    var canPts = total() >= 0 || isTeacher();
+    if (!canPts) $('#reset-note').textContent = 'Tổng điểm của em đang dưới 0, nên chỉ giáo viên mới đặt lại được.';
+    else if (isTeacher()) $('#reset-note').textContent += ' Giáo viên: nút thứ hai còn đưa mọi câu hỏi trở lại.';
+    unlockTimer = setTimeout(function(){ $('#reset-pts').disabled = !canPts; $('#reset-all').disabled = !isTeacher(); }, UNLOCK_MS);
+    resetTimer = setTimeout(resetClose, RESET_WAIT);
+    $('#reset-cancel2').focus();
+  }
+  $('#sb-reset').addEventListener('click', function(){ if (resetPanel.hidden) resetOpen(); else resetClose(); });
+  $('#final-reset').addEventListener('click', resetOpen);
+  $('#reset-continue').addEventListener('click', resetStep2);
+  $('#reset-cancel1').addEventListener('click', resetClose);
+  $('#reset-cancel2').addEventListener('click', resetClose);
+  function resetEverything(clearLedger){
+    KEYS.forEach(function(k){ score[k] = 0; if (clearLedger) used[k] = {}; });
+    saveScore(); if (clearLedger) saveUsed(true);
+    try { window.localStorage.removeItem(SSKEY); } catch (err) {}
+    resetClose();
+    cw = null; $('#cw-grid').innerHTML = ''; $('#cw-across').innerHTML = ''; $('#cw-down').innerHTML = ''; $('#cw-banner').textContent = ''; $('#cw-status').textContent = '';
+    wsInit(); scInit(); hmInit(); if (currentTab === 'cw') cwInit();
+  }
+  $('#reset-pts').addEventListener('click', function(){
+    if (this.disabled || (total() < 0 && !isTeacher())) return;
+    resetEverything(false);
+    drawScore('Đã đặt lại tất cả. Các ván mới đã bắt đầu. Câu hỏi đã dùng vẫn được giữ.', ''); drawLeft();
+  });
+  $('#reset-all').addEventListener('click', function(){
+    if (this.disabled || !isTeacher()) return;
+    resetEverything(true);
+    drawScore('Đã đặt lại điểm và câu hỏi đã dùng. Phiên mới bắt đầu.', ''); drawLeft();
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !resetPanel.hidden) resetClose(); });
+
+  window.addEventListener('storage', function(e){
+    if (e.key === SKEY) { syncScore(); drawScore(); }
+    if (e.key === UKEY) { KEYS.forEach(function(k){ used[k] = {}; }); syncUsed(); drawLeft(); }
+  });
+
+
+  /* ---------- autosave: unfinished puzzles survive a reload ---------- */
+  var lastSaved = '';
+  function snapshot(){
+    var st = { v: 1, tab: currentTab, sel: { ws: $('#ws-level').value, cw: $('#cw-size').value, sc: $('#sc-level').value, hm: $('#hm-level').value, hmclue: $('#hm-clue').checked } };
+    if (ws && ws.puzzle) st.ws = { terms: ws.terms, puzzle: ws.puzzle, found: ws.found, paths: ws.paths, revealed: ws.revealed, hintUsed: ws.hintUsed, listMode: ws.listMode, listPaid: ws.listPaid, assisted: ws.assisted, bonusDone: ws.bonusDone, level: ws.level };
+    if (cw) {
+      var vals = {}; Object.keys(cw.inputs).forEach(function(k){ if (cw.inputs[k].value) vals[k] = cw.inputs[k].value; });
+      st.cw = { data: cw.data, size: cw.size, tricky: cw.tricky, hintUsed: cw.hintUsed, awarded: cw.awarded, free: cw.free, bonusDone: cw.bonusDone, vals: vals };
+    }
+    if (sc && sc.queue && sc.queue.length) st.sc = sc;
+    if (hm && hm.word) st.hm = hm;
+    return st;
+  }
+  function saveState(){
+    if (isTeacher()) return;
+    try { var j = JSON.stringify(snapshot()); if (j !== lastSaved) { window.localStorage.setItem(SSKEY, j); lastSaved = j; } } catch (err) {}
+  }
+  function pickOpt(sel, v){ if (!sel || typeof v !== 'string') return; for (var i = 0; i < sel.options.length; i++) if (sel.options[i].value === v) { sel.value = v; return; } }
+  function restoreState(){
+    var st = readStore(SSKEY);
+    if (!st || st.v !== 1) return false;
+    var got = false;
+    try {
+      var sl = st.sel || {};
+      pickOpt($('#ws-level'), sl.ws); pickOpt($('#cw-size'), sl.cw); pickOpt($('#sc-level'), sl.sc); pickOpt($('#hm-level'), sl.hm);
+      if (typeof sl.hmclue === 'boolean') $('#hm-clue').checked = sl.hmclue;
+      var w = st.ws;
+      if (w && w.puzzle && w.puzzle.g && Array.isArray(w.terms) && w.terms.length) {
+        ws.terms = w.terms; ws.puzzle = w.puzzle; ws.found = w.found || {}; ws.paths = w.paths || {}; ws.revealed = w.revealed || {};
+        ws.hintUsed = !!w.hintUsed; ws.listMode = !!w.listMode; ws.listPaid = !!w.listPaid; ws.assisted = !!w.assisted; ws.bonusDone = !!w.bonusDone;
+        ws.level = w.level || $('#ws-level').value; ws.showAll = false; ws.start = null; ws.cur = null;
+        wsDrawGrid(); hintBtn($('#ws-hint'), ws.hintUsed);
+        Object.keys(ws.paths).forEach(function(word){ if (ws.found[word]) ws.paths[word].forEach(function(p){ if (ws.cells[p[0]] && ws.cells[p[0]][p[1]]) ws.cells[p[0]][p[1]].classList.add('found'); }); });
+        wsRenderList(); got = true;
+      } else wsInit();
+      var c = st.cw;
+      if (c && c.data && c.data.grid) {
+        cwBuild(c.data, c.size, c.tricky || {});
+        cw.hintUsed = !!c.hintUsed; cw.awarded = c.awarded || {}; cw.free = c.free || {}; cw.bonusDone = !!c.bonusDone;
+        hintBtn($('#cw-hint'), cw.hintUsed);
+        Object.keys(c.vals || {}).forEach(function(k){ if (cw.inputs[k]) cw.inputs[k].value = c.vals[k]; });
+        cwRefresh(); got = true;
+      }
+      var q = st.sc;
+      if (q && Array.isArray(q.queue) && q.queue.length && q.level) {
+        sc = q; sc.wrongs = sc.wrongs || {}; sc.assist = sc.assist || {};
+        hintBtn($('#sc-hint'), !!sc.hintUsed); $('#sc-card').hidden = false; scShow(); got = true;
+      } else scInit();
+      var m = st.hm;
+      if (m && m.word && Array.isArray(m.queue) && m.guessed) {
+        hm = m; hmDraw(); got = true;
+        if (hm.over) { hmStatus.textContent = hm.ended ? 'Hết ván. Hãy bấm Ván mới.' : 'Đã xong từ này. Hãy bấm Từ tiếp theo.'; }
+      } else hmInit();
+      if (st.tab && st.tab !== 'ws' && $('#tab-' + st.tab)) showTab(st.tab);
+    } catch (err) { return false; }
+    return got;
+  }
+  setInterval(saveState, 1000);
+  window.addEventListener('pagehide', saveState);
+  window.addEventListener('beforeunload', saveState);
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') saveState(); });
+
+  if (!restoreState()) { wsInit(); scInit(); hmInit(); }
+  drawScore(); drawLeft();
+})();
+</script>
+</body></html>
